@@ -1,0 +1,62 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+    background-color: #fffdd0; /* Creamy background color */
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+
+.input-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.input-group input[type="text"],
+.input-group input[type="number"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.input-group button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.input-group button:hover {
+    background-color: #0056b3;
+}
+
+#resultContainer {
+    /* Other styles... */
+    width: 100%; /* or max-width: 100%; if you want to maintain the original size up to full width */
+    height: auto; /* maintain aspect ratio */
+}
+
+#logs {
+    height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #000; /* Black background for output */
+    color: #808080; /* Gray text for output */
+    font-family: 'Courier New', Courier, monospace; /* Monospace font for output */
+    margin: 10px 0;
+    text-align: left;
+}

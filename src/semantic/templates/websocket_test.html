@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Test</title>
+    <link rel="stylesheet" href="/static/css/style.css?<?=time()?>">
+</head>
+<body>
+    <input id="messageInput" type="text">
+    <button id="sendButton">Send</button>
+    <div id="messages"></div>
+
+    <script>
+        var socket = new WebSocket("ws://localhost:8000/ws");
+
+        document.getElementById('sendButton').onclick = function() {
+            var message = document.getElementById('messageInput').value;
+            socket.send(message);
+        };
+
+        socket.onmessage = function(event) {
+            var messages = document.getElementById('messages');
+            messages.innerHTML += '<p>' + event.data + '</p>';
+        };
+    </script>
+</body>
+</html>
