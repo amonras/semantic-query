@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb
+    ports:
+      - "8000:8000"
+    volumes:
+      - chromadb_data:/data
+
+  chromadb-admin:
+    image: fengzhichao/chromadb-admin:latest
+    container_name: chromadb-admin
+    ports:
+      - "3000:3000"
+    environment:
+      - CHROMADB_URL=http://chromadb:8000
+    depends_on:
+      - chromadb
+
+volumes:
+  chromadb_data:
