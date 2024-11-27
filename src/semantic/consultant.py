@@ -17,7 +17,6 @@ class Consultant:
     def __init__(self, splitter: TextSplitter, file: Optional[Path] = None):
         self.file = file
         self.splitter = splitter or CharacterTextSplitter()
-
         self.embeddings_model = HuggingFaceEmbeddings(
             model_name='sentence-transformers/all-MiniLM-l6-v2',
             model_kwargs={'device': 'cpu'},

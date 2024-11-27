@@ -15,7 +15,7 @@ class Embedding:
             cache_folder='../cache/',
         )
 
-    def embed_nodes(self, nodes: List[Node]) -> Tuple[
+    def embed_nodes(self, nodes: List[Node]) -> tuple[
         List[Union[List[Tensor], ndarray, Tensor]],
         List[str],
         List[dict]
@@ -30,4 +30,4 @@ class Embedding:
         return embeddings, documents, metadata
 
     def embed_string(self, text: str) -> Tensor:
-        return self.model.encode(text)
+        return self.model.encode(text).tolist()

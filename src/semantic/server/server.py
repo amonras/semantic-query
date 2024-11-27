@@ -73,3 +73,12 @@ async def upload(request: Request, file: UploadFile = File(...)):
     file_path = await connection.upload(file)
 
     return {"message": f"File uploaded successfully to {file_path}"}
+
+
+def main():
+    import uvicorn
+    uvicorn.run(app)
+
+
+if __name__ == "__main__":
+    main()

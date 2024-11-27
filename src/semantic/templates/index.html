@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>WebSocket Test</title>
-    <link rel="stylesheet" href="/static/css/style.css?<?=time()?>">
+    <link rel="stylesheet" href="/static/css/style.css?<?= Date.now() ?>">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/dropzone.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.7.0/dropzone.js"></script>
 </head>
@@ -14,6 +14,7 @@
     <input id="messageInput" type="text">
     <button id="sendButton">Send</button>
     <div id="messages"></div>
-    <script src="/static/js/main.js"></script>
+    <div id="logs"></div>
+    <script src="/static/js/main.js?<?= Date.now() ?>"></script>
 </body>
 </html>

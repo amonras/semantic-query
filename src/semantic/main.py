@@ -4,7 +4,6 @@ from pathlib import Path
 from langchain_text_splitters import CharacterTextSplitter
 
 from semantic.consultant import Consultant
-from semantic.splitters.article_splitter import ArticleSplitter
 
 
 def init_parser():
@@ -12,7 +11,7 @@ def init_parser():
     parser.add_argument(
         "--file",
         type=str,
-        help="Path to the file to be uploaded",
+        help="Path to the file to be processed",
         required=True
     )
     parser.add_argument(

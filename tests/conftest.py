@@ -18,8 +18,8 @@ def html_text():
 @fixture
 def node_titulo(html_text):
     soup = BeautifulSoup(html_text, "html.parser")
-    h4s = soup.findAll(['h4', 'h5', 'p'])
-    parsed = parse(h4s, level='titulo_num')[0]
+    tags = soup.findAll(['h4', 'h5', 'p'])
+    parsed = parse(tags, levels=['titulo'])[0]
 
     yield parsed
 
@@ -27,7 +27,7 @@ def node_titulo(html_text):
 @fixture
 def node_capitulo(html_text):
     soup = BeautifulSoup(html_text, "html.parser")
-    h4s = soup.findAll(['h4', 'h5', 'p'])
-    parsed = parse(h4s, level='capitulo_num')[0]
+    tags = soup.findAll(['h4', 'h5', 'p'])
+    parsed = parse(tags, levels=['capitulo'])[0]
 
     yield parsed
