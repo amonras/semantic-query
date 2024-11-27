@@ -1,3 +1,5 @@
+from models.node import Node
+
 schema = [
     {
         'level': 'document',
@@ -110,6 +112,7 @@ def next_class(tags):
 
     return cl
 
+
 def consume_tags(tags):
     """
     Consume tags until a new level is found
@@ -141,59 +144,6 @@ def consume_tags(tags):
     }
     return obj
 
-
-def parse2(tags, level=None):
-    """
-    Parse a sequence of tags and generate a tree
-    :param tags:
-    :param current_tag: Skip until this level is found
-    :return: list of elements
-    """
-    stack = []
-    elems = []
-
-    if level is not None:
-        current_level = get_level(level)
-        # Skip until we find the level
-        while tags:
-            cl = next_class(tags)
-            if cl is not None and cl in current_level['attributes']:
-                break
-            tag = tags[0]
-            tags.remove(tag)
-
-    while tags:
-        cl = next_class(tags)
-        current_level = get_level(cl)
-        if current_level is None:
-            tags.remove(tags[0])
-            continue
-
-        attributes = {a: None for a in current_level['attributes']}
-        while cl in attributes.keys() and any(val is None for val in attributes.values()):
-            tag = tags[0]
-            attributes[cl] = tag.text
-            tags.remove(tag)
-            cl = next_class(tags)
-
-        content = current_level['format'].format(**attributes)
-        obj = {
-            'level': current_level['level'],
-            'content': content,
-            'children': []
-        }
-
-        while stack and current_level['level'] not in stack[-1]['children']:
-            stack.pop()
-
-        if stack:
-            stack[-1]['children'].append(obj)
-        else:
-            elems.append(obj)
-
-        stack.append(obj)
-
-    return elems
 
 def parse(tags, level=None):
     """
@@ -241,11 +191,11 @@ def parse(tags, level=None):
 
         content = current_level['format'].format(**attributes)
 
-        obj = {
-            'level': current_level['level'],
-            'content': content,
-            'children': []
-        }
+        obj = Node(
+            level=current_level['level'],
+            content=content,
+            children=[]
+        )
 
         next_level = get_level(cl)
         # If there's no next level, we are at the end of the chain
@@ -256,8 +206,7 @@ def parse(tags, level=None):
         # Check if next level is child, sibling or parent
         if next_level['level'] in current_level['children']:
             # Child
-            obj['children'] = parse(tags)
-            # elems.append(obj)
+            obj.children = parse(tags)
 
         next_level = get_level(next_class(tags))
         # If there's no next level, we are at the end of the chain
