@@ -8,9 +8,11 @@ def ingest():
     text = download_civil_code()
 
     print("Dividing into articles...")
-    main_node = get_document_structure(text)
+    main_node = get_document_structure(text)[0]
 
     store = get_storage()
+
+    store.delete_all()
     store.store(main_node)
 
 

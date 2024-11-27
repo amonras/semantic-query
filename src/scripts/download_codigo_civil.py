@@ -35,10 +35,10 @@ def parse_civil_code(text):
     return content_divs[0]
 
 
-def get_document_structure(text) -> Node:
+def get_document_structure(text) -> List[Node]:
     soup = BeautifulSoup(text, "html.parser")
     tags = soup.findAll(['h4', 'h5', 'p'])
-    parsed = parse(tags, level='anexo')
+    parsed = parse(tags, levels=['document'])
     return parsed
 
 
@@ -67,17 +67,18 @@ def main():
     refined_path = root_path() / conf['storage']['refined'] / 'codigo_civil.json'
     main_node = get_document_structure(text)
     os.makedirs(os.path.dirname(refined_path), exist_ok=True)
-    main_node.save(refined_path)
+    main_node[0].save(refined_path)
     print("Artículos guardados en 'codigo_civil.json'.")
 
     html_path = root_path() / conf['storage']['html'] / 'codigo_civil.html'
     os.makedirs(os.path.dirname(html_path), exist_ok=True)
     with open(html_path, 'w', encoding='utf-8') as file:
-        file.write(main_node.html(
+        file.write(main_node[0].html(
             preamble="""
             <html lang="es"><head><meta charset="utf-8" /></head>
             """
         ))
+    print("Artículos guardados en 'codigo_civil.html'.")
 
 
 if __name__ == "__main__":

@@ -25,7 +25,7 @@ class TestParser:
     def test_parser_returns_when_parent_found(self, html_text):
         soup = BeautifulSoup(html_text, "html.parser")
         tags = soup.findAll(['h4', 'h5', 'p'])
-        parsed = parse(tags, level='capitulo_num')[:100]
+        parsed = parse(tags, levels=['capitulo'])[:100]
 
         assert len(parsed) == 5
         assert len(parsed[0].children) == 2
@@ -42,7 +42,7 @@ class TestParser:
     def test_parse_siblings_with_children(self, html_text):
         soup = BeautifulSoup(html_text, "html.parser")
         h4s = soup.findAll(['h4', 'h5', 'p'])
-        parsed = parse(h4s, level='titulo_num')[0]
+        parsed = parse(h4s, levels=['titulo'])[0]
 
         assert parsed.level == 'titulo'
         assert parsed.children[0].level == 'capitulo'
@@ -51,16 +51,19 @@ class TestParser:
     def test_parse_paragraphs(self, html_text):
         soup = BeautifulSoup(html_text, "html.parser")
         h4s = soup.findAll(['h4', 'h5', 'p'])
-        parsed = parse(h4s, level='anexo')
+        parsed = parse(h4s, levels=['document'])
 
         assert parsed[0].level == 'document'
 
     def test_parse_entire_doc(self, html_text):
         soup = BeautifulSoup(html_text, "html.parser")
         tags = soup.findAll(['h4', 'h5', 'p'])
-        parsed = parse(tags, level='anexo')[0]
+        parsed = parse(tags, levels=['document'])[0]
 
         assert 'TÍTULO PRELIMINAR' in parsed.children[0].content
         assert 'LIBRO PRIMERO' in parsed.children[1].content
+        assert 'TÍTULO I' in parsed.children[1].children[0].content
+        assert 'TÍTULO II' in parsed.children[1].children[1].content
         assert 'LIBRO SEGUNDO' in parsed.children[2].content
-
+        assert 'DISPOSICIONES TRANSITORIAS' in parsed.children[4].children[-1].children[4].content
+        assert 'DISPOSICIONES ADICIONALES' in parsed.children[4].children[-1].children[5].content
