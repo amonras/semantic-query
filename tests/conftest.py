@@ -13,13 +13,13 @@ resources = Path(__file__).parent / "resources"
 
 @fixture
 def codigo_civil_spec():
-    docspec = DocumentSpec.load(resources / "codigo_civil_spec.json")
+    docspec = DocumentSpec.load(resources / "codigo-civil-spec.json")
     yield docspec
 
 
 @fixture(scope='session')
 def html_text():
-    with open(resources / "codigo_civil.html") as f:
+    with open(resources / "codigo-civil.html") as f:
         yield f.read()
 
 

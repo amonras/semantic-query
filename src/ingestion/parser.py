@@ -1,30 +1,5 @@
 from ingestion.documentspec import DocumentSpec
-from ingestion.resources.codigo_civil import schema
 from models.node import Node
-
-
-def get_level_from_class(attr):
-    """
-    Given a tag class, return the level it is an attribute of
-    :param attr:
-    :return:
-    """
-    for level in schema:
-        if attr in level['attributes']:
-            return level
-    return None
-
-
-def get_level_from_name(name):
-    """
-    Given a tag class, return the level it is an attribute of
-    :param attr:
-    :return:
-    """
-    for level in schema:
-        if name == level['level']:
-            return level
-    return None
 
 
 def next_class(tags):

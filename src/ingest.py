@@ -1,5 +1,5 @@
 from embedding import Embedding
-from scripts.download_codigo_civil import download_civil_code, get_document_structure
+from scripts.download import download_civil_code, get_document_structure
 from storage import get_storage
 
 

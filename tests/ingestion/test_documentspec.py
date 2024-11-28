@@ -8,7 +8,7 @@ from ingestion.documentspec import DocumentSpec
 
 @fixture
 def document_spec_json():
-    with open(resources / "codigo_civil_spec.json", "r") as file:
+    with open(resources / "codigo-civil-spec.json", "r") as file:
         yield json.load(file)
 
 

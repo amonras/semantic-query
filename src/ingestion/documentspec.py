@@ -44,6 +44,7 @@ class DocumentSpec:
     schema: List[DocumentLevelSchema]
     tags: List[str]
     head: str
+    wraps: List[str] = field(default_factory=list)
 
     @classmethod
     def from_dict(cls, data):
@@ -52,17 +53,22 @@ class DocumentSpec:
             url=data['url'],
             schema=[DocumentLevelSchema.from_dict(d) for d in data['schema']],
             tags=data['tags'],
-            head=data['head']
+            head=data['head'],
+            wraps=data.get('wraps', [])
         )
 
     def to_dict(self):
-        return {
+        obj = {
             'name': self.name,
             'url': self.url,
             'schema': [d.to_dict() for d in self.schema],
             'tags': self.tags,
             'head': self.head
         }
+        if self.wraps:
+            obj['wraps'] = self.wraps
+
+        return obj
 
     @classmethod
     def load(cls, filename):
