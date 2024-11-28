@@ -1,6 +1,7 @@
 {
     "name": "Código Civil",
     "url": "https://boe.es/buscar/act.php?id=BOE-A-1889-4763&p=20230301&tn=0",
+    "embed_level": "articulo",
     "schema": [
         {
             "level": "document",

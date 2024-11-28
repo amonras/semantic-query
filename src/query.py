@@ -22,10 +22,8 @@ def parser():
     return cli_parser
 
 
-def main():
-    args = parser().parse_args()
-
-    if args.interactive:
+def main(q=None, interactive=False, n_results=3):
+    if interactive:
         os.system('clear')
         print("Interactive mode. Enter a query string to search the Spanish Civil Code.")
         while True:
@@ -35,11 +33,11 @@ def main():
             except KeyboardInterrupt:
                 print("\nGoodbye!")
                 break
-            results = query(query_string, n_results=args.n_results)
+            results = query(query_string, n_results=n_results)
             print("\n")
             print_results(results)
     else:
-        results = query(args.query, n_results=5)
+        results = query(q, n_results=5)
         print_results(results)
 
 
@@ -49,4 +47,5 @@ def print_results(results):
 
 
 if __name__ == "__main__":
-    main()
+    q = "Cual es es la diferencia entre homicidio y asesinato"
+    main(q=q, n_results=3)

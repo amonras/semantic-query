@@ -2,6 +2,8 @@ import json
 from dataclasses import dataclass, field
 from typing import List
 
+from slugify import slugify
+
 
 @dataclass
 class DocumentLevelSchema:
@@ -44,6 +46,7 @@ class DocumentSpec:
     schema: List[DocumentLevelSchema]
     tags: List[str]
     head: str
+    embed_level: str
     wraps: List[str] = field(default_factory=list)
 
     @classmethod
@@ -54,6 +57,7 @@ class DocumentSpec:
             schema=[DocumentLevelSchema.from_dict(d) for d in data['schema']],
             tags=data['tags'],
             head=data['head'],
+            embed_level=data['embed_level'],
             wraps=data.get('wraps', [])
         )
 
@@ -63,7 +67,8 @@ class DocumentSpec:
             'url': self.url,
             'schema': [d.to_dict() for d in self.schema],
             'tags': self.tags,
-            'head': self.head
+            'head': self.head,
+            'embed_level': self.embed_level,
         }
         if self.wraps:
             obj['wraps'] = self.wraps
@@ -103,3 +108,7 @@ class DocumentSpec:
             if name == level.level:
                 return level
         return None
+
+    @property
+    def code(self):
+        return slugify(self.name)

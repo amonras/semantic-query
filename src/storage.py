@@ -1,5 +1,5 @@
 import configparser
-from typing import Optional
+from typing import Optional, List
 
 import chromadb
 
@@ -15,22 +15,23 @@ class Storage:
         self.collection = self.client.get_or_create_collection(name=collection_name)
         self.embedding = embedding
 
-    def delete_all(self):
-        print('Deleting all documents...')
-        self.client.delete_collection(name=self.collection_name)
+    def delete_collection(self, collection):
+        try:
+            self.client.get_collection(collection)
+            print(f'Deleting all documents in collection {collection}...')
+            self.client.delete_collection(name=collection)
+        except chromadb.errors.InvalidCollectionException as e:
+            pass
 
-    def store(self, node: Node):
-        print(f'Adding documents to collection `{self.collection_name}`...')
-        collection = self.client.get_or_create_collection(name=self.collection_name)
-
-        # Get the strings of all Nodes
-        all_nodes = node.get_all(level='articulo')
+    def store(self, nodes: List[Node]):
+        print(f'Adding/updating documents to collection {self.collection_name}...')
+        collection = self.client.get_or_create_collection(self.collection_name)
 
         # Embed nodes
-        ids = [str(ch.id) for ch in all_nodes]
-        embeddings, documents, metadatas = self.embedding.embed_nodes(all_nodes)
+        ids = [str(ch.id) for ch in nodes]
+        embeddings, documents, metadatas = self.embedding.embed_nodes(nodes)
 
-        collection.add(
+        collection.upsert(
             ids=ids,
             embeddings=embeddings,
             documents=documents,

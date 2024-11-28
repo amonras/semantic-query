@@ -1,6 +1,7 @@
 {
     "name": "CÓDIGO PENAL",
     "url": "https://www.boe.es/buscar/act.php?id=BOE-A-1995-25444&p=20240611&tn=0",
+    "embed_level": "articulo",
     "schema": [
         {
             "level": "document",

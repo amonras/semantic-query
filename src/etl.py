@@ -5,21 +5,30 @@ from typing import List
 import requests
 from slugify import slugify
 from bs4 import BeautifulSoup
-import json
 
 from config import get_config, root_path
 from ingestion.documentspec import DocumentSpec
 from models.node import Node
 from ingestion.parser import parse
+from storage import get_storage
 
 
-def get_document_structure(text, docspec: DocumentSpec) -> List[Node]:
-    soup = BeautifulSoup(text, "html.parser")
-    tags = soup.findAll(docspec.tags)
-    parsed = parse(tags, docspec=docspec, levels=docspec.wraps or [docspec.head])
-    if len(parsed) > 1:
-        parsed = [Node(level='root', content=docspec.name, children=parsed)]
-    return parsed
+def get_docspecs(path: Path = None) -> List[Path]:
+    """
+    Return all the docspecs in the resources folder
+    """
+    if path is None:
+        path = Path(__file__).parent / 'ingestion' / 'resources/'
+    filenames = []
+    for root, subdirs, files in os.walk(path):
+        for file in files:
+            if file.endswith('.json'):
+                filenames.append(Path(root + '/' + file))
+
+    if not filenames:
+        print(f"No document Spec filed found in provided folder {path}")
+
+    return filenames
 
 
 def download(docspec: DocumentSpec) -> str:
@@ -31,11 +40,31 @@ def download(docspec: DocumentSpec) -> str:
     return response.text
 
 
-def main(force_download=False):
+def get_document_structure(text, docspec: DocumentSpec) -> List[Node]:
+    soup = BeautifulSoup(text, "html.parser")
+    tags = soup.findAll(docspec.tags)
+    parsed = parse(tags, docspec=docspec, levels=docspec.wraps or [docspec.head])
+    if len(parsed) > 1:
+        parsed = [Node(level='root', content=docspec.name, children=parsed)]
+    return parsed
+
+
+def ingest(main_node, docspec: DocumentSpec, store=None):
+    # store.delete_collection(docspec.code)
+
+    # Get the strings of all Nodes
+    all_nodes = main_node.get_all(level=docspec.embed_level)
+
+    store.store(all_nodes)
+
+
+def main(force_download=False, path=None):
     conf = get_config()
 
-    # load docspecs
-    filenames = get_docspecs()
+    store = get_storage()
+
+    # Load Docspecs
+    filenames = get_docspecs(path)
     docspecs = [DocumentSpec.load(filename) for filename in filenames]
 
     for docspec in docspecs:
@@ -77,20 +106,8 @@ def main(force_download=False):
             ))
         print(f"HTML saved to '{slug_name}.html'.")
 
-
-def get_docspecs(path: Path = None) -> List[Path]:
-    """
-    Return all the docspecs in the resources folder
-    """
-    if path is None:
-        path = Path(__file__).parent.parent / 'ingestion' / 'resources/'
-    filenames = []
-    for root, subdirs, files in os.walk(path):
-        for file in files:
-            if file.endswith('.json'):
-                filenames.append(Path(root + '/' + file))
-
-    return filenames
+        # Ingesting into vector database
+        ingest(main_node[0], docspec, store=store)
 
 
 if __name__ == "__main__":
