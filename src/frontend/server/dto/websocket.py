@@ -34,3 +34,18 @@ class FileUploaded(WebSocketMessage):
     """
     filename: str
 
+
+@dataclass
+class ChatQueryMessage(WebSocketMessage):
+    """
+    A query chat message to send to the client.
+    """
+    message: str
+
+
+@dataclass
+class ChatResponseMessage(WebSocketMessage):
+    """
+    A response chat message to send to the client.
+    """
+    message: str

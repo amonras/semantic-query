@@ -7,9 +7,9 @@ from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocketDisconnect
 
-from semantic_pdf import paths
-from semantic_pdf.server.connection import Connection
-from semantic_pdf.server.dto.websocket import ConnectionId
+from frontend import paths
+from frontend.server.connection import Connection
+from frontend.server.dto.websocket import ConnectionId
 
 
 class ConnectionManager:

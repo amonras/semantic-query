@@ -5,13 +5,13 @@ from io import BytesIO
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from starlette.websockets import WebSocket
 
-from semantic_pdf.paths import uploads
-from semantic_pdf.server.dto.websocket import FileUploaded
+from frontend.paths import uploads
+from frontend.server.dto.websocket import FileUploaded
 
 
 class Connection:
     """
-    A class to handle the connection between the server and the client.
+    A class to handle the connection between the frontend and the client.
     """
     def __init__(self, websocket: WebSocket):
         self.websocket = websocket
@@ -34,7 +34,7 @@ class Connection:
 
     async def upload(self, file):
         """
-        Save file to the server and update the uploaded_files attribute.
+        Save file to the frontend and update the uploaded_files attribute.
         :param file:
         :return:
         """

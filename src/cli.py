@@ -21,7 +21,7 @@ def main():
 
     # Server command
     server_parser = subparsers.add_parser("server", help="Run server")
-    server_parser.add_argument("-p", "--port", type=int, help="Port to run the server on", default=8000)
+    server_parser.add_argument("-p", "--port", type=int, help="Port to run the frontend on", default=8000)
 
     args = parser.parse_args()
 
@@ -45,7 +45,8 @@ def handle_query(args):
 
 
 def handle_server(args):
-    print(f"Starting server on port {args.port}")
+    from frontend.server import server
+    server.main()
 
 
 if __name__ == "__main__":

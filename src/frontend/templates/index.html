@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bienvenido a la busqueda jurídica semántica</title>
+    <link rel="stylesheet" href="/static/css/style.css?<?= Date.now() ?>">
+</head>
+<body>
+    <div class="banner">
+        <h1>Bienvenido a la busqueda jurídica semántica</h1>
+    </div>
+    <div class="container">
+        <div class="left" id="injected-html">
+            <!-- Injected HTML will appear here -->
+        </div>
+        <div class="right" id="qa-scroll">
+            <!-- Q&A content will appear here -->
+            <div class="qa-input">
+                <input type="text" id="messageInput" placeholder="Type your message here...">
+                <button id="sendButton">Send</button>
+            </div>
+        </div>
+    </div>
+    <div id="messages"></div>
+    <div id="logs"></div>
+    <script src="/static/js/main.js?<?= Date.now() ?>"></script>
+</body>
+</html>

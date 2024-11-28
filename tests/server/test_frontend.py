@@ -22,12 +22,12 @@ def server():
     server_process = multiprocessing.Process(target=start_server)
     server_process.start()
 
-    # Give the server some time to start
+    # Give the frontend some time to start
     time.sleep(.3)
 
     yield
 
-    # Terminate the server process after the tests have completed
+    # Terminate the frontend process after the tests have completed
     server_process.terminate()
 
 
@@ -47,7 +47,7 @@ def test_websocket(test_client: TestClient) -> WebSocketTestSession:
 # @pytest.mark.asyncio
 # async def test_websocket_changes_page_content(
 #         test_websocket: WebSocketTestSession,
-#         server: FastAPI,
+#         frontend: FastAPI,
 #         # test_client: TestClient,
 # ):
 #     async with async_playwright() as p:
