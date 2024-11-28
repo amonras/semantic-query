@@ -1,4 +1,5 @@
 .python-version
+.ipynb_checkpoints/
 */*.egg-info/*
 .idea/
 
