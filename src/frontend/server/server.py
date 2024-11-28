@@ -7,9 +7,13 @@ from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocketDisconnect
 
+from config import get_config
+from etl import get_files
 from frontend import paths
 from frontend.server.connection import Connection
-from frontend.server.dto.websocket import ConnectionId
+from frontend.server.dto.websocket import ConnectionId, DisplayDocuments
+
+conf = get_config()
 
 
 class ConnectionManager:
@@ -48,6 +52,11 @@ async def home():
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     connection = await manager.connect(websocket)
+
+    # Send DisplayDocuments message once the connection is established
+    documents = [open(filename, 'r').read() for filename in get_files(conf['storage']['html'], extension='html')]
+    await connection.send_message(DisplayDocuments(documents=documents).to_dict())
+
     try:
         while True:
             try:

@@ -31,6 +31,24 @@ def get_docspecs(path: Path = None) -> List[Path]:
     return filenames
 
 
+def get_files(path: Path, extension: str = None, subfolders=False) -> List[Path]:
+    """
+    Return all the files in the resources folder
+    """
+    filenames = []
+    for root, subdirs, files in os.walk(path):
+        for file in files:
+            if file.endswith(extension):
+                filenames.append(Path(root + '/' + file))
+        if not subfolders:
+            break
+
+    if not filenames:
+        print(f"No files found in provided folder {path}")
+
+    return filenames
+
+
 def download(docspec: DocumentSpec) -> str:
     # Hacer la solicitud HTTP
     response = requests.get(docspec.url)

@@ -1,20 +1,62 @@
 body {
     font-family: Arial, sans-serif;
-    text-align: center;
     padding: 20px;
     background-color: #fffdd0; /* Creamy background color */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin: 0;
+}
+
+.banner {
+    background-color: #4CAF50;
+    color: white;
+    text-align: center;
+    padding: 1em 0;
 }
 
 .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+    display: flex;
+    flex: 1;
+    overflow: hidden;
 }
 
+.left, .right {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1em;
+}
+.left {
+    background-color: #f1f1f1;
+}
+.right {
+    background-color: #ffffff;
+    border-left: 1px solid #ccc;
+    display: flex;
+    flex-direction: column;
+}
 .hidden {
     display: none;
 }
-
+.qa-input {
+    display: flex;
+    border-top: 1px solid #ccc;
+    padding: 0.5em;
+}
+.qa-input input {
+    flex: 1;
+    padding: 0.5em;
+    margin-right: 0.5em;
+}
+.qa-input button {
+    padding: 0.5em 1em;
+}
+#messages, #logs {
+    background-color: #e9e9e9;
+    padding: 1em;
+    overflow-y: auto;
+    max-height: 150px;
+}
 
 .input-group {
     display: flex;
@@ -47,6 +89,14 @@ body {
     /* Other styles... */
     width: 100%; /* or max-width: 100%; if you want to maintain the original size up to full width */
     height: auto; /* maintain aspect ratio */
+}
+
+.footer {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    background-color: #fffdd0;
+    padding: 1em;
 }
 
 #messages {

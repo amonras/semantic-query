@@ -9,7 +9,14 @@ from models.node import Node
 
 
 class Storage:
-    def __init__(self, embedding: Embedding, chroma_client: chromadb.Client, collection_name: str = 'default'):
+    def __init__(
+            self,
+            embedding: Embedding,
+            chroma_client: chromadb.Client,
+            collection_name: str = 'default',
+            conf: Optional[configparser.ConfigParser] = None
+    ):
+        self.config = conf or config.get_config()
         self.client: chromadb.Client = chroma_client
         self.collection_name = collection_name
         self.collection = self.client.get_or_create_collection(name=collection_name)
@@ -47,6 +54,9 @@ class Storage:
         )
 
         return retrieved
+
+    def get_html_docs(self) -> List[str]:
+        self.config['storage']['html']
 
 
 def get_chroma(conf: Optional[configparser.ConfigParser] = None) -> chromadb.Client:

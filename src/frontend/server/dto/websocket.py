@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import List
 
 
 class WebSocketMessage:
@@ -49,3 +50,11 @@ class ChatResponseMessage(WebSocketMessage):
     A response chat message to send to the client.
     """
     message: str
+
+
+@dataclass
+class DisplayDocuments(WebSocketMessage):
+    """
+    A message to send the documents to the client.
+    """
+    documents: List[str]
