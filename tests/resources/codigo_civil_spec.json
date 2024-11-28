@@ -1,0 +1,153 @@
+{
+    "name": "Código Civil",
+    "url": "url-that-will-never-point-anywhere-as-test-resources-should",
+    "schema": [
+        {
+            "level": "document",
+            "name": "Documento",
+            "attributes": [
+                "anexo"
+            ],
+            "format": "{anexo}",
+            "children": [
+                "titulo",
+                "libro"
+            ]
+        },
+        {
+            "level": "libro",
+            "name": "Libro",
+            "attributes": [
+                "libro_num",
+                "libro_tit"
+            ],
+            "format": "{libro_num}: {libro_tit}",
+            "children": [
+                "titulo",
+                "seccion"
+            ]
+        },
+        {
+            "level": "titulo",
+            "name": "Título",
+            "attributes": [
+                "titulo_num",
+                "titulo_tit"
+            ],
+            "format": "{titulo_num}: {titulo_tit}",
+            "children": [
+                "capitulo",
+                "capitulo_unico",
+                "seccion",
+                "articulo"
+            ]
+        },
+        {
+            "level": "capitulo",
+            "name": "Capítulo",
+            "attributes": [
+                "capitulo_num",
+                "capitulo_tit"
+            ],
+            "format": "{capitulo_num}: {capitulo_tit}",
+            "children": [
+                "seccion",
+                "articulo",
+                "parrafo",
+                "parrafo2"
+            ]
+        },
+        {
+            "level": "capitulo_unico",
+            "name": "Capítulo Unico",
+            "attributes": [
+                "capitulo"
+            ],
+            "format": "{capitulo}",
+            "children": [
+                "seccion",
+                "articulo",
+                "parrafo",
+                "parrafo2"
+            ]
+        },
+        {
+            "level": "seccion",
+            "name": "Sección",
+            "attributes": [
+                "seccion"
+            ],
+            "format": "{seccion}",
+            "children": [
+                "subseccion",
+                "articulo"
+            ]
+        },
+        {
+            "level": "subseccion",
+            "name": "Subsección",
+            "attributes": [
+                "subseccion"
+            ],
+            "format": "{subseccion}",
+            "children": [
+                "articulo"
+            ]
+        },
+        {
+            "level": "articulo",
+            "name": "Artículo",
+            "attributes": [
+                "articulo"
+            ],
+            "format": "{articulo}",
+            "children": [
+                "parrafo",
+                "parrafo2"
+            ]
+        },
+        {
+            "level": "parrafo",
+            "name": "Párrafo",
+            "attributes": [
+                "parrafo"
+            ],
+            "format": "{parrafo}",
+            "children": [
+                "footnote"
+            ],
+            "siblings": [
+                "parrafo2"
+            ]
+        },
+        {
+            "level": "parrafo2",
+            "name": "Párrafo2",
+            "attributes": [
+                "parrafo_2"
+            ],
+            "format": "{parrafo_2}",
+            "children": [
+                "footnote"
+            ],
+            "siblings": [
+                "parrafo"
+            ]
+        },
+        {
+            "level": "footnote",
+            "name": "Cita",
+            "attributes": [
+                "cita_con_pleca"
+            ],
+            "format": "{cita_con_pleca}",
+            "children": []
+        }
+    ],
+    "tags": [
+        "h4",
+        "h5",
+        "p"
+    ],
+    "head": "document"
+}
