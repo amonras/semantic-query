@@ -5,7 +5,7 @@ from pytest import fixture
 
 from parser.parser import parse
 
-static_files = Path(__file__).parent.parent / "src/semantic/static/css"
+static_files = Path(__file__).parent.parent / "src/semantic_pdf/static/css"
 resources = Path(__file__).parent / "resources"
 
 
