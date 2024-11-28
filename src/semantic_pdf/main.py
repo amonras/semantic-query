@@ -3,7 +3,7 @@ from pathlib import Path
 
 from langchain_text_splitters import CharacterTextSplitter
 
-from semantic.consultant import Consultant
+from semantic_pdf.consultant import Consultant
 
 
 def init_parser():

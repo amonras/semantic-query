@@ -5,8 +5,8 @@ from io import BytesIO
 from PyPDF2 import PdfFileReader, PdfFileWriter
 from starlette.websockets import WebSocket
 
-from semantic.paths import uploads
-from semantic.server.dto.websocket import FileUploaded
+from semantic_pdf.paths import uploads
+from semantic_pdf.server.dto.websocket import FileUploaded
 
 
 class Connection:

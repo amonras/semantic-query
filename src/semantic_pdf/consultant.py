@@ -7,7 +7,7 @@ from langchain_community.vectorstores import Chroma
 from tika import parser
 from langchain_text_splitters import TextSplitter, CharacterTextSplitter
 
-from semantic.splitters.article_splitter import ArticleSplitter
+from semantic_pdf.splitters.article_splitter import ArticleSplitter
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

@@ -1,5 +1,5 @@
 """
-Command line interface for the semantic package.
+Command line interface for the semantic_pdf package.
 
 Commands:
 - Parse: Parse a PDF file and generate a ParsedDocument object (to be stored or printed).
@@ -7,13 +7,13 @@ Commands:
 - Query: Query the vector database for similar documents
 - Respond: Generate a response to a query based on the query and a set of retrieved documents
 """
-from semantic.parser import parse
+from semantic_pdf.parser import parse
 
 
 def init_parser():
     import argparse
 
-    cli_parser = argparse.ArgumentParser(description="Command line interface for the semantic query package.")
+    cli_parser = argparse.ArgumentParser(description="Command line interface for the semantic_pdf query package.")
     subparsers = cli_parser.add_subparsers(dest="command", help="Available commands")
 
     # Parse command
