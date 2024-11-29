@@ -6,17 +6,17 @@ from numpy import ndarray
 from sentence_transformers import SentenceTransformer
 from torch import Tensor
 
-from config import root_path
+from config import root_path, get_config
 from models.node import Node
 
 
 class Embedding:
     def __init__(self, conf: Optional[configparser.ConfigParser] = None):
-        self.conf = conf or configparser.ConfigParser()
+        self.conf = conf or get_config()
         # Load a pre-trained model
         self.model = SentenceTransformer(  # Lightweight, fast model
-            conf.get('embedding', 'model_name_or_path'),
-            cache_folder=root_path() / conf.get('embedding', 'cache_folder')
+            self.conf.get('embedding', 'model_name_or_path'),
+            cache_folder=root_path() / conf.get('embedding', 'cache')
         )
 
     def embed_nodes(self, nodes: List[Node]) -> tuple[

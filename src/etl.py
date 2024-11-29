@@ -76,7 +76,16 @@ def ingest(main_node, docspec: DocumentSpec, store=None):
     store.store(all_nodes)
 
 
-def main(force_download=False, path=None):
+def clean():
+    conf = get_config()
+
+    collection = conf['storage']['collection']
+    store = get_storage()
+    store.delete_collection(collection)
+    print(f"Deleted collection '{collection}'.")
+
+
+def run(force_download=False, path=None):
     conf = get_config()
 
     store = get_storage()
@@ -129,4 +138,4 @@ def main(force_download=False, path=None):
 
 
 if __name__ == "__main__":
-    main()
+    run()

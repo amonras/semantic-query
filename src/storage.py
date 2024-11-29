@@ -85,6 +85,6 @@ def get_storage(conf: Optional[configparser.ConfigParser] = None) -> Storage:
 
     chroma_client = get_chroma(conf)
     collection = conf.get('storage', 'collection')
-    embedding = Embedding()
+    embedding = Embedding(conf=conf)
 
     return Storage(embedding=embedding, chroma_client=chroma_client, collection_name=collection)

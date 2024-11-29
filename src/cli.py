@@ -12,6 +12,10 @@ def main():
     etl_parser = subparsers.add_parser("etl", help="Run data pipelines")
     etl_parser.add_argument("--path", type=str, help="Path where to look for document specs", )
     etl_parser.add_argument("--force", type=str, help="Force download", default=False)
+    etl_subparser = etl_parser.add_subparsers(dest="subcommand", help="Subcommands for the ETL pipeline")
+    clean = etl_subparser.add_parser("clean", help="Clean data from vector database")
+    ingest = etl_subparser.add_parser("run", help="Ingest data into vector database")
+    ingest.add_argument("--path", type=str, help="Path where to look for document specs", )
 
     # Query command
     query_parser = subparsers.add_parser("query", help="Query data")
@@ -37,7 +41,12 @@ def main():
 
 def handle_etl(args):
     import etl
-    etl.main(force_download=args.force, path=args.path)
+    if args.subcommand == "clean":
+        etl.clean()
+    elif args.subcommand == "run":
+        etl.run(force_download=args.force, path=args.path)
+    else:
+        print("No {args.subcommand} subcommand found.")
 
 
 def handle_query(args):
