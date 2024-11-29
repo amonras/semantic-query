@@ -1,4 +1,5 @@
 import json
+import uuid
 from dataclasses import dataclass
 from typing import List
 
@@ -21,6 +22,12 @@ class Node(AutoIncrement):
     content: str
     children: list
     id: int = None
+    uuid: str = None
+
+    def __post_init__(self):
+        super().__post_init__()
+        if self.uuid is None:
+            self.uuid = str(uuid.uuid4())
 
     def __repr__(self):
         return f'{self.level}({self.content})'
@@ -41,10 +48,10 @@ class Node(AutoIncrement):
         """
         out = preamble
         if not self.children:
-            out += f'<p>{self.content}</p>'
+            out += f'<p id="{self.uuid}">{self.content}</p>'
         else:
             out += f"""
-            <details>
+            <details id="{self.uuid}">
                 <summary>{self.content}</summary>
                 <ul>
                     {''.join([child.html() for child in self.children])}
@@ -59,6 +66,7 @@ class Node(AutoIncrement):
         """
         return {
             'id': self.id,
+            'uuid': self.uuid,
             'level': self.level,
             'content': self.content,
             'children': [child.json() for child in self.children]

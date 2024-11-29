@@ -17,6 +17,7 @@ class Storage:
             conf: Optional[configparser.ConfigParser] = None
     ):
         self.config = conf or config.get_config()
+        self.n_results = int(self.config['rag']['n_results'])
         self.client: chromadb.Client = chroma_client
         self.collection_name = collection_name
         self.collection = self.client.get_or_create_collection(name=collection_name)
@@ -45,12 +46,12 @@ class Storage:
             metadatas=metadatas
         )
 
-    def query(self, q_string: str, n_results: int = 1) -> chromadb.QueryResult:
+    def query(self, q_string: str) -> chromadb.QueryResult:
         query_embedding = self.embedding.embed_string(q_string)
 
         retrieved = self.collection.query(
             query_embeddings=[query_embedding],
-            n_results=n_results,
+            n_results=self.n_results,
         )
 
         return retrieved

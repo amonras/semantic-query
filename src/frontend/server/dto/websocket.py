@@ -43,6 +43,13 @@ class ChatQueryMessage(WebSocketMessage):
     """
     message: str
 
+@dataclass
+class UnfoldNodes(WebSocketMessage):
+    """
+    A message to send the nodes to the client.
+    """
+    node_uuids: List[str]
+
 
 @dataclass
 class ChatResponseMessage(WebSocketMessage):

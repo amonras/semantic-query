@@ -25,7 +25,17 @@ class Embedding:
         # Generate embeddings
         embeddings = self.model.encode(texts)
         documents = [node.render() for node in nodes]
-        metadata = [{'content': node.content} for node in nodes]
+        metadata = [
+            {
+                'level': node.level,
+                'uuid': node.uuid,
+                # 'parent_uuid': node.parent.uuid,
+                # 'child_uuids': [child.uuid for child in node.children],
+                'data-uuid': node.uuid,
+                'id': node.id,
+                'content': node.content
+            } for node in nodes
+        ]
 
         return embeddings, documents, metadata
 

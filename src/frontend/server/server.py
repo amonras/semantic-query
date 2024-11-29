@@ -10,7 +10,8 @@ from starlette.websockets import WebSocketDisconnect
 from config import get_config
 from etl import get_files
 from frontend import paths
-from frontend.server.connection import Connection
+from ragagent import RAGAgent
+from frontend.server.websocket import Connection
 from frontend.server.dto.websocket import ConnectionId, DisplayDocuments
 
 conf = get_config()
@@ -24,17 +25,20 @@ class ConnectionManager:
         await websocket.accept()
         # generate a unique id for the connection
         connection_id = hashlib.sha256(str(websocket).encode()).hexdigest()
-        connection = Connection(websocket)
+
+        # Create a new RAG agent and pass it to the connection
+        connection = Connection(
+            conn_id=connection_id,
+            websocket=websocket,
+            rag_agent=RAGAgent(conf)
+        )
         self.active_connections[connection_id] = connection
         await self.active_connections[connection_id].send_message(ConnectionId(connection_id=connection_id).to_dict())
         return connection
 
     def disconnect(self, connection: Connection):
         # remove the connection from the active connections
-        for connection_id, con in self.active_connections.items():
-            if connection == con:
-                del self.active_connections[connection_id]
-                break
+        del self.active_connections[connection.id]
 
 
 app = FastAPI()

@@ -4,7 +4,7 @@ from fastapi import FastAPI, WebSocket
 from starlette.websockets import WebSocketDisconnect
 
 from frontend import paths
-from frontend.consultant import Consultant
+from ragagent import RAGAgent
 from frontend.server.server import ConnectionManager
 
 logger = logging.getLogger(__name__)
@@ -38,15 +38,11 @@ async def websocket_endpoint(websocket: WebSocket):
         await manager.disconnect(websocket)
 
 import logging
-import os
 import asyncio
-from pathlib import Path
 
-from fastapi import FastAPI, WebSocket, UploadFile, File, HTTPException
+from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
-from werkzeug.utils import secure_filename
-
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -54,7 +50,7 @@ logger.setLevel(logging.DEBUG)
 app = FastAPI()
 app.mount("/static", StaticFiles(directory=paths.static), name="static")
 
-consultant = Consultant()
+consultant = RAGAgent()
 
 
 def run_function(args, logger, result_container):
