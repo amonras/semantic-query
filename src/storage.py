@@ -46,12 +46,12 @@ class Storage:
             metadatas=metadatas
         )
 
-    def query(self, q_string: str) -> chromadb.QueryResult:
+    def query(self, q_string: str, n_results: Optional[int] = None) -> chromadb.QueryResult:
         query_embedding = self.embedding.embed_string(q_string)
 
         retrieved = self.collection.query(
             query_embeddings=[query_embedding],
-            n_results=self.n_results,
+            n_results=n_results or self.n_results,
         )
 
         return retrieved
