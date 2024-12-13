@@ -5,6 +5,20 @@ Currently, the interface is a simple command-line interface (CLI) tool and a web
 The system supports data ingestion, cleaning, querying, and running a server for frontend interactions.
 
 
+## Quick Start
+You should be able to kickstart the project by launching the docker compose setup:
+```sh
+  $ docker-compose up
+```
+
+These are the relevant web interfaces:
+- [Frontend: `http://localhost:8000`](http://localhost:8000)
+- [Neo4j Browser: `http://localhost:7474`](http://localhost:7474)
+- [ChromaDB Browser: `http://localhost:3000/collections/legal-database`](http://localhost:3000/collections/legal-database)
+- [Airflow: `http://localhost:8080`](http://localhost:8080)
+- [Minio Console: `http://localhost:9001`](http://localhost:9001)
+
+
 ## Functionality
 
 The CLI tool provides the following commands:
