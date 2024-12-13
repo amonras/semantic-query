@@ -36,7 +36,7 @@ class Storage:
         collection = self.client.get_or_create_collection(self.collection_name)
 
         # Embed nodes
-        ids = [str(ch.id) for ch in nodes]
+        ids = [str(ch.uuid) for ch in nodes]
         embeddings, documents, metadatas = self.embedding.embed_nodes(nodes)
 
         collection.upsert(
