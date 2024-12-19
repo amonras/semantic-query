@@ -1,7 +1,8 @@
 from pathlib import Path
 from unittest.mock import patch
 import pytest
-from src.scripts.download import get_docspecs
+
+from etl import get_docspecs
 
 
 @pytest.fixture
@@ -19,11 +20,17 @@ def test_get_docspecs_folder(mock_os_walk):
     expected = [Path('/some/folder/file1.json'), Path('/some/folder/file2.json')]
     assert result == expected
 
-def test_get_docspecs_file():
+
+def test_get_docspecs_file(mock_os_walk):
+    mock_os_walk.return_value = [
+        ('/some/folder', ('subdir',), ('file1.json',)),
+    ]
+
     path = Path('/some/folder/file1.json')
     result = get_docspecs(path)
     expected = [Path('/some/folder/file1.json')]
     assert result == expected
+
 
 def test_get_docspecs_default(mock_os_walk):
     mock_os_walk.return_value = [

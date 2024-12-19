@@ -1,6 +1,7 @@
 {
     "name": "Código Civil",
     "url": "url-that-will-never-point-anywhere-as-test-resources-should",
+    "embed_level": "articulo",
     "schema": [
         {
             "level": "document",

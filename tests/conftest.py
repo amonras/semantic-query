@@ -1,13 +1,13 @@
 from pathlib import Path
 
-from _pytest.fixtures import fixture
 from bs4 import BeautifulSoup
 from pytest import fixture
 
+from config import root_path
 from ingestion.documentspec import DocumentSpec
-from ingestion.parser import parse
+from ingestion.parsers.html_parser import parse
 
-static_files = Path(__file__).parent.parent / "src/semantic_pdf/static/css"
+static_files = root_path() / "src/frontend/static/css"
 resources = Path(__file__).parent / "resources"
 
 

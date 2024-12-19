@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 from config import get_config, root_path
 from ingestion.documentspec import DocumentSpec
 from models.node import Node
-from ingestion.parser import parse
+from ingestion.parsers.html_parser import parse
 from storage import get_storage
 
 
