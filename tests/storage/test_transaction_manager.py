@@ -30,7 +30,7 @@ def test_store_with_transaction_single_node(transaction_manager, hybrid_storage,
 
     transaction_manager.store_with_transaction(root_node)
 
-    graph_storage.batch_store.assert_called_once_with([root_node])
+    graph_storage.batch_store.assert_called_once_with([root_node], None)
     chroma_storage.store_batch.assert_called_once_with([root_node])
 
 
@@ -42,7 +42,7 @@ def test_store_with_transaction_multiple_nodes(transaction_manager, hybrid_stora
 
     transaction_manager.store_with_transaction(root_nodes)
 
-    graph_storage.batch_store.assert_called_once_with(root_nodes)
+    graph_storage.batch_store.assert_called_once_with(root_nodes, None)
     chroma_storage.store_batch.assert_has_calls([
         call([root_nodes[0]]),
         call([root_nodes[1]])

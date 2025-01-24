@@ -4,7 +4,6 @@ from textwrap import dedent
 from typing import Optional, List, Dict
 
 import numpy as np
-import typing_extensions as te
 from neo4j import Driver, GraphDatabase
 
 import config
@@ -29,13 +28,13 @@ class GraphStorage:
 
     def create_node(self, node: Node):
         """
-        Create a single node in the Neo4j database.
+        Create a single node in the Neo4j database. It has no ordinal value.
         """
         node_data = NodeAdapter.to_neo4j(node)
         with self.driver.session() as session:
             query = """
             MERGE (n:Node {uuid: $uuid})
-            SET n.level = $level, n.content = $content
+            SET n.level = $level, n.content = $content, n.ordinal = $ordinal
             RETURN n
             """
             session.run(query, **node_data)

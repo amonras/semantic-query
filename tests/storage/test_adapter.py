@@ -19,7 +19,7 @@ def test_to_neo4j_with_relationships_with_children():
     assert len(nodes) == 3  # Root + 2 children
     assert len(relationships) == 2  # Root -> Child 1, Root -> Child 2
     assert relationships == [(root.uuid, root.children[0].uuid), (root.uuid, root.children[1].uuid)]
-    assert [node['ordinal'] for node in nodes] == [0, 0, 1]
+    assert [node['ordinal'] for node in nodes] == [None, 0, 1]
 
 
 def test_to_neo4j_with_relationships_deep_hierarchy():
