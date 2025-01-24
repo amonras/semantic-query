@@ -3,7 +3,7 @@ import os
 
 from conftest import resources
 from models.node import Node
-from src.ingestion.parsers.pdf_parser import extract_paragraphs
+from ingestion.parsers.pdf_parser import extract_paragraphs
 
 
 @pytest.fixture

@@ -1,7 +1,9 @@
 import json
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List
+
+from config import get_fs
 
 
 class AutoIncrement:  # pylint: disable=too-few-public-methods
@@ -20,7 +22,7 @@ class AutoIncrement:  # pylint: disable=too-few-public-methods
 class Node(AutoIncrement):
     level: str
     content: str
-    children: list
+    children: list = field(default_factory=list)
     id: int = None
     uuid: str = None
 
@@ -76,7 +78,9 @@ class Node(AutoIncrement):
         """
         Save the node to a file
         """
-        with open(path, 'w', encoding='utf8') as file:
+        fs = get_fs()
+
+        with fs.open(path, 'w', encoding='utf8') as file:
             json.dump(self.json(), file, indent=4, ensure_ascii=False)
 
     def load(self, path):

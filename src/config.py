@@ -2,6 +2,7 @@ import configparser
 import logging
 import os
 from pathlib import Path
+from typing import Optional
 
 import fsspec
 
@@ -46,8 +47,8 @@ def configure_fsspec():
 configure_fsspec()
 
 
-def get_fs():
-    conf = get_config()
+def get_fs(conf: Optional[configparser.ConfigParser] = None):
+    conf = conf or get_config()
     if conf['storage']['type'] == 's3':
         fs = fsspec.filesystem("s3")
     else:

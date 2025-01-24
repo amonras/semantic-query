@@ -61,6 +61,16 @@ services:
       - ${PWD}/data/:/data
     command: server /data --console-address ":9001"
 
+  neo4j:
+    image: neo4j:latest
+    container_name: neo4j
+    environment:
+      - NEO4J_AUTH=neo4j/neo4jtest
+    ports:
+      - "7474:7474"  # Browser
+      - "7687:7687"  # Bolt protocol
+    volumes:
+      - ${PWD}/neo4j_data:/data
 
 volumes:
   chromadb_data:

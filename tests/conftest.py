@@ -7,8 +7,18 @@ from config import root_path
 from ingestion.documentspec import DocumentSpec
 from ingestion.parsers.html_parser import parse
 
-static_files = root_path() / "src/frontend/static/css"
 resources = Path(__file__).parent / "resources"
+
+
+@fixture
+def static_files():
+    return root_path() / "src/frontend/static/css"
+
+
+@fixture
+def css_code(static_files):
+    with open(static_files / 'document_tree.css', 'r') as css_file:
+        yield css_file.read()
 
 
 @fixture

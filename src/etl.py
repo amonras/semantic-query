@@ -6,11 +6,14 @@ import requests
 from slugify import slugify
 from bs4 import BeautifulSoup
 
-from config import get_config, root_path
+from config import get_config, root_path, get_fs
 from ingestion.documentspec import DocumentSpec
+from ingestion.paths import refined_path
 from models.node import Node
 from ingestion.parsers.html_parser import parse
-from storage import get_storage
+from storage.chroma_storage import ChromaStorage
+from storage.hybrid_storage import HybridStorage
+from storage.transaction_manager import TransactionManager
 
 
 def get_docspecs(path: Path = None) -> List[Path]:
@@ -63,32 +66,34 @@ def get_document_structure(text, docspec: DocumentSpec) -> List[Node]:
     tags = soup.findAll(docspec.tags)
     parsed = parse(tags, docspec=docspec, levels=docspec.wraps or [docspec.head])
     if len(parsed) > 1:
-        parsed = [Node(level='root', content=docspec.name, children=parsed)]
+        parsed = [Node(level=docspec.head, content=docspec.name, children=parsed)]
     return parsed
 
 
-def ingest(main_node, docspec: DocumentSpec, store=None):
-    # store.delete_collection(docspec.code)
-
-    # Get the strings of all Nodes
+def ingest(main_node, docspec: DocumentSpec, storage: TransactionManager):
     all_nodes = main_node.get_all(level=docspec.embed_level)
 
-    store.store(all_nodes)
+    storage.store_with_transaction(main_node)
 
 
 def clean():
+    print("This will empty both databases. Are you sure you want to continue? (y/n)")
+    response = input()
+    if response.lower() != 'y':
+        print("Aborted.")
+        return
+
     conf = get_config()
 
-    collection = conf['storage']['collection']
-    store = get_storage()
-    store.delete_collection(collection)
-    print(f"Deleted collection '{collection}'.")
+    store = HybridStorage.get_hybrid_storage(conf)
+    store.delete_all()
+    print(f"Cleared all databases.")
 
 
 def run(force_download=False, path=None):
     conf = get_config()
 
-    store = get_storage()
+    transaction_manager = TransactionManager.get_transaction_manager(conf)
 
     # Load Docspecs
     filenames = get_docspecs(path)
@@ -114,12 +119,11 @@ def run(force_download=False, path=None):
                 text = file.read()
 
         # Refining documents
-        target_filename = f'{slug_name}.json'
-        refined_path = root_path() / conf['storage']['refined'] / target_filename
+        target = refined_path() + f'{slug_name}.json'
+
         main_node = get_document_structure(text, docspec=docspec)
 
-        os.makedirs(os.path.dirname(refined_path), exist_ok=True)
-        main_node[0].save(refined_path)
+        main_node[0].save(target)
         print(f"Saved refined in '{target_filename}'.")
 
         # Saving json
@@ -134,7 +138,7 @@ def run(force_download=False, path=None):
         print(f"HTML saved to '{slug_name}.html'.")
 
         # Ingesting into vector database
-        ingest(main_node[0], docspec, store=store)
+        ingest(main_node[0], docspec, storage=transaction_manager)
 
 
 if __name__ == "__main__":
