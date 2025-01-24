@@ -13,7 +13,7 @@ from ingestion.parsers.pdf_parser import extract_paragraphs
 from ingestion.paths import raw_path, refined_path, fsspec_walk
 from config import get_config, logging, get_fs
 from models.node import Node
-from storage import get_storage
+from storage.transaction_manager import TransactionManager
 
 logger = logging.getLogger(__name__)
 
@@ -286,10 +286,10 @@ def parse_pdfs(date: datetime, force=False) -> None:
 
 
 @date_range_decorator
-def ingest_pdfs(date: datetime, force=False):
-    """ Embed the parsed PDFs into the database """
-    storage = get_storage()
-
+def ingest_pdfs(date: datetime, transaction_manager: TransactionManager, force=False, dataset_uuid=None):
+    """
+    Ingest the parsed documents into the database
+    """
     path = refined_path() + f'jurisprudencia/docs/{date.strftime("%Y/%m/%d")}'
 
     nodes = []
@@ -304,8 +304,8 @@ def ingest_pdfs(date: datetime, force=False):
                 node = Node.from_dict(json.load(file))
             nodes.append(node)
 
-    if nodes:
-        storage.store(nodes)
+    transaction_manager.store_with_transaction(nodes, parent_uuid=dataset_uuid)
+
 
 
 if __name__ == "__main__":
@@ -316,4 +316,7 @@ if __name__ == "__main__":
     refine_item_pagination(start_date=start_date, end_date=end_date)
     download_pdfs(start_date=start_date, end_date=end_date)
     parse_pdfs(start_date=start_date, end_date=end_date)
-    ingest_pdfs(start_date=start_date, end_date=end_date)
+
+    transaction_manager = TransactionManager.get_transaction_manager(get_config())
+    dataset_uuid = transaction_manager.init_dataset("Jurisprudencia")
+    ingest_pdfs(start_date=start_date, end_date=end_date, transaction_manager=transaction_manager, dataset_uuid=dataset_uuid)

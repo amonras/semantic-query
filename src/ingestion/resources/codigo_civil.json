@@ -4,8 +4,8 @@
     "embed_level": "articulo",
     "schema": [
         {
-            "level": "document",
-            "name": "Documento",
+            "level": "dataset",
+            "name": "Dataset",
             "attributes": [
                 "anexo"
             ],
@@ -150,5 +150,5 @@
         "h5",
         "p"
     ],
-    "head": "document"
+    "head": "dataset"
 }

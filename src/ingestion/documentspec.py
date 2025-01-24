@@ -41,13 +41,13 @@ class DocumentLevelSchema:
 
 @dataclass
 class DocumentSpec:
-    name: str
-    url: str
-    schema: List[DocumentLevelSchema]
-    tags: List[str]
-    head: str
-    embed_level: str
-    wraps: List[str] = field(default_factory=list)
+    name: str  # The name of the document/dataset
+    url: str  # The url where the document can be found
+    schema: List[DocumentLevelSchema]  # The schema of the document
+    tags: List[str]  # The html tag types that need to be observed in order to parse the document
+    head: str  # The head of the document, to be used for the root node at root.level
+    embed_level: str  # The level at which the document should be embedded in the database
+    wraps: List[str] = field(default_factory=list)  # The levels that should be wrapped immediately under the root node
 
     @classmethod
     def from_dict(cls, data):
