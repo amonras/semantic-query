@@ -6,18 +6,22 @@ The system supports data ingestion, cleaning, querying, and running a server for
 
 
 ## Quick Start
-You should be able to kickstart the project by launching the docker compose setup:
+You should be able to kickstart the project by launching the docker compose setup and then starting the server:
 ```sh
   $ docker-compose up
 ```
+This will launch the following services:
+- [ChromaDB Browser: `http://localhost:3000/collections/legal-database`](http://localhost:3000/collections/legal-database). This is the vector Database used to run semantic queries.
+- [Neo4J Browser: `http://localhost:7474`](http://localhost:7474). This is a GUI to the graph database that will hold the relationships between the different documents indexed in the ChromaDB.
+- [Airflow: `http://localhost:8080`](http://localhost:8080). This is the scheduler used to run daily data mining tasks.
+- [Minio Console: `http://localhost:9001`](http://localhost:9001). This is the object storage used to store the documents in local develpment envs.
 
-These are the relevant web interfaces:
+Finally, run
+```sh
+  $ semantic server
+````
+to launch the frontend interface, accessible through
 - [Frontend: `http://localhost:8000`](http://localhost:8000)
-- [ChromaDB Browser: `http://localhost:3000/collections/legal-database`](http://localhost:3000/collections/legal-database)
-- [Neo4J Browser: `http://localhost:7474`](http://localhost:7474)
-- [Airflow: `http://localhost:8080`](http://localhost:8080)
-- [Minio Console: `http://localhost:9001`](http://localhost:9001)
-
 
 ## Functionality
 
