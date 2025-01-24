@@ -13,7 +13,6 @@ def document_spec_json():
 
 
 class TestDocumentSpec:
-
     def test_document_spec(self, document_spec_json):
         spec = DocumentSpec.from_dict(document_spec_json)
         assert spec.name == "Código Civil"

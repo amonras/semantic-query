@@ -16,7 +16,7 @@ class Embedding:
         # Load a pre-trained model
         self.model = SentenceTransformer(  # Lightweight, fast model
             self.conf.get('embedding', 'model_name_or_path'),
-            cache_folder=root_path() / conf.get('embedding', 'cache')
+            cache_folder=root_path() / self.conf.get('embedding', 'cache')
         )
 
     def embed_nodes(self, nodes: List[Node]) -> tuple[
