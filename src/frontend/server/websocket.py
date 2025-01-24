@@ -47,7 +47,6 @@ class Connection:
         self.uploaded_files = {}
 
     async def send_message(self, message: dict):
-        print(message)
         await self.websocket.send_json(message)
         self.message_count += 1
 
@@ -60,9 +59,8 @@ class Connection:
 
     async def handle_message(self, msg: WebSocketMessage):
         if isinstance(msg, ChatQueryMessage):
-            print(msg.message)
             response = self.rag_agent.query(msg.message)
-            nodes_uuids = [n['data-uuid'] for metadata in response['metadatas'] for n in metadata]
+            nodes_uuids = [n.uuid for n in response]
             print("Sending response to websocket client")
             await self.send_message(
                 UnfoldNodes(node_uuids=nodes_uuids).to_dict()

@@ -1,14 +1,18 @@
 import os
 import textwrap
 
-from storage import get_storage
+from render.plain_text import PlainTextRenderer
+from storage.chroma_storage import ChromaStorage
+from storage.hybrid_storage import HybridStorage
 
 
 def query(q_string: str, n_results: int = 3):
-    store = get_storage()
+    store = HybridStorage.get_hybrid_storage()
     results = store.query(q_string, n_results=n_results)
 
-    return results
+    nodes = [store.retrieve_parent(uuid) for uuid in results['ids'][0]]
+
+    return nodes
 
 
 def parser():
@@ -41,11 +45,15 @@ def main(q=None, interactive=False, n_results=3):
         print_results(results)
 
 
-def print_results(results):
-    for doc in results['documents'][0]:
-        print("\n" + doc)
+def print_results(nodes):
+    for node in nodes:
+        print(
+            "\n".join(textwrap.wrap(
+                PlainTextRenderer.render(node)
+            ))
+        )
 
 
 if __name__ == "__main__":
-    q = "Cual es es la diferencia entre homicidio y asesinato"
+    q = "sobre la colocación de pancartas en balcón de ayuntamiento"
     main(q=q, n_results=3)

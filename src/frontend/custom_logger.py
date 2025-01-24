@@ -19,7 +19,7 @@ class WebSocketHandler(logging.Handler):
         try:
             log_entry = self.format(record)
             message = {"type": "log", "payload": log_entry}
-            print(f"Sending message: {message}")
+            # print(f"Sending message: {message}")
             future = asyncio.run_coroutine_threadsafe(self.websocket.send_json(message), self.loop)
             # Wait for the future to complete and raise any exceptions
             future.result()

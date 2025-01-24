@@ -1,3 +1,5 @@
+from textwrap import dedent
+
 from fastapi import FastAPI, WebSocket, Request
 from typing import Dict
 import hashlib
@@ -13,6 +15,8 @@ from frontend import paths
 from ragagent import RAGAgent
 from frontend.server.websocket import Connection
 from frontend.server.dto.websocket import ConnectionId, DisplayDocuments
+from render.html import HTMLRenderer
+from storage.hybrid_storage import HybridStorage
 
 conf = get_config()
 
@@ -59,7 +63,17 @@ async def websocket_endpoint(websocket: WebSocket):
 
     # Send DisplayDocuments message once the connection is established
     documents = [open(filename, 'r').read() for filename in get_files(conf['storage']['html'], extension='html')]
-    await connection.send_message(DisplayDocuments(documents=documents).to_dict())
+
+    storage = HybridStorage.get_hybrid_storage(conf)
+    documents = storage.graph_storage.retrieve_by(level='dataset')
+    doc_repr = [
+        HTMLRenderer.render(
+            doc,
+            preamble=dedent("""<html lang="es"><head><meta charset="utf-8" /></head>""")
+        )
+        for doc in documents
+    ]
+    await connection.send_message(DisplayDocuments(documents=doc_repr).to_dict())
 
     try:
         while True:
@@ -78,8 +92,6 @@ async def websocket_endpoint(websocket: WebSocket):
 
 @app.post("/upload")
 async def upload(request: Request, file: UploadFile = File(...)):
-    print(request.headers)
-    print(file)
     # get the connection id from the header
     connection_id = request.headers["Connection-ID"]
     connection = manager.active_connections[connection_id]
