@@ -12,7 +12,7 @@ resources = Path(__file__).parent / "resources"
 
 @fixture
 def static_files():
-    return root_path() / "semantic/frontend/static/css"
+    return root_path() / "verdictnet/frontend/static/css"
 
 
 @fixture

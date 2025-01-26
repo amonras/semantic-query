@@ -14,15 +14,15 @@ logging.basicConfig(
 
 
 def root_path():
-    return Path(__file__).parent.parent
+    return Path(__file__).parent.parent.parent
 
 
 def get_config():
     # Create a ConfigParser instance
     config = configparser.ConfigParser()
 
-    # Load the configuration file
-    config.read(root_path() / 'config.ini')
+    # Load the configuration file from the current folder
+    config.read(filenames=['config.ini', root_path() / 'config.ini'])
 
     return config
 

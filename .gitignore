@@ -3,6 +3,7 @@
 .ipynb_checkpoints/
 */*.egg-info/*
 .idea/
+build/
 
 __pycache__/
 docs/
@@ -11,5 +12,4 @@ data/
 datalake/
 neo4j_data/
 postgress_storage/
-storage/
 

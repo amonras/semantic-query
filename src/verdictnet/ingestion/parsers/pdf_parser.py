@@ -1,6 +1,6 @@
 import pdfplumber
 
-from models.node import Node
+from verdictnet.models.node import Node
 
 
 def extract_paragraphs(pdf_path) -> Node:

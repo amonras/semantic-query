@@ -3,7 +3,7 @@ import uuid
 from dataclasses import dataclass, field
 from typing import List
 
-from config import get_fs
+from verdictnet.config import get_fs
 
 
 class AutoIncrement:  # pylint: disable=too-few-public-methods

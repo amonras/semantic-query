@@ -6,8 +6,8 @@ from numpy import ndarray
 from sentence_transformers import SentenceTransformer
 from torch import Tensor
 
-from config import root_path, get_config
-from models.node import Node
+from verdictnet.config import root_path, get_config
+from verdictnet.models.node import Node
 
 
 class Embedding:

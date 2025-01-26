@@ -9,11 +9,11 @@ import requests
 from bs4 import BeautifulSoup
 from tqdm import tqdm
 
-from ingestion.parsers.pdf_parser import extract_paragraphs
-from ingestion.paths import raw_path, refined_path, fsspec_walk
-from config import get_config, logging, get_fs
-from models.node import Node
-from storage.transaction_manager import TransactionManager
+from verdictnet.ingestion.parsers.pdf_parser import extract_paragraphs
+from verdictnet.ingestion.paths import raw_path, refined_path, fsspec_walk
+from verdictnet.config import get_config, logging, get_fs
+from verdictnet.models.node import Node
+from verdictnet.storage.transaction_manager import TransactionManager
 
 logger = logging.getLogger(__name__)
 

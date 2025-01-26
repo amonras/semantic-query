@@ -2,7 +2,7 @@ from pathlib import Path
 
 import fsspec
 
-from config import root_path, get_config, logging
+from verdictnet.config import root_path, get_config, logging
 
 logger = logging.getLogger(__name__)
 

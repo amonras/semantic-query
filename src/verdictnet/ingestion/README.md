@@ -2,7 +2,7 @@
 
 There are currently two ingestion processes in place:
 ```sh
-$ semantic erl run
+$ verdictnet erl run
 ```
 ingests the documents specified in `src/ingestion/resources/`, namely:
 - Código Civil

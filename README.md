@@ -18,7 +18,7 @@ This will launch the following services:
 
 Finally, run
 ```sh
-  $ semantic server
+  $ verdictnet server
 ````
 to launch the frontend interface, accessible through
 - [Frontend: `http://localhost:8000`](http://localhost:8000)
@@ -33,7 +33,7 @@ Run data pipelines to ingest and process documents.
 
 #### Usage:
 ```sh
-$ semantic etl [--path PATH] [--force FORCE] {clean,run}
+$ verdictnet etl [--path PATH] [--force FORCE] {clean,run}
 
 --path PATH: Path where to look for document specs.
 --force FORCE: Force download of documents.
@@ -46,13 +46,13 @@ run: Ingest data into the vector database.
 Query the data stored in the system.
 Usage:
 ```sh
-    $ semantic query [--query QUERY] [--n_results N_RESULTS] [--interactive]
+    $ verdictnet query [--query QUERY] [--n_results N_RESULTS] [--interactive]
 ```
 ### Server
 Run the server to provide a frontend interface.
 Usage:
 ```sh
-    $ semantic server [-p PORT]
+    $ verdictnet server [-p PORT]
     
     -p, --port PORT: Port to run the frontend on (default: 8000).
 ```
@@ -60,16 +60,16 @@ Usage:
 ## Example usage
 ```sh
 # Clean the vector database
-semantic etl clean
+verdictnet etl clean
 
 # Run the ETL pipeline
-semantic etl run --path /path/to/docspecs --force true
+verdictnet etl run --path /path/to/docspecs --force true
 
 # Query the data
-semantic query --query "example query" --n_results 5
+verdictnet query --query "example query" --n_results 5
 
 # Run the server
-semantic server --port 8080
+verdictnet server --port 8080
 ```
 
 ## Configuration

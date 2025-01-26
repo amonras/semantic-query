@@ -7,7 +7,7 @@ license = MIT
 
 [options]
 package_dir=
-    =src
+    =semantic
 packages = find:
 install_requires =
     numpy
@@ -19,10 +19,9 @@ install_requires =
     matplotlib
     pyarrow
     PyMuPDF
-    wordcloud
 
 [options.packages.find]
-where=src
+where=semantic
 
 [options.entry_points]
 console_scripts =

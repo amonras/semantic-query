@@ -1,4 +1,4 @@
-.PHONY: server etl test
+.PHONY: server etl test build clean
 
 # Default port for the server
 PORT ?= 8000
@@ -6,6 +6,11 @@ PORT ?= 8000
 # Path for ETL documents
 ETL_PATH ?= /path/to/docspecs
 FORCE ?= true
+
+# Docker build
+.PHONY: build
+build:
+	@docker build -t semantic_airflow .
 
 # Run the server
 server:
