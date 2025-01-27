@@ -9,6 +9,8 @@ FORCE ?= true
 
 .PHONY: setup
 setup:
+	@echo "Installing requirements..."
+	@pip install -r requirements.txt
 	@echo "Generating .env file with FERNET_KEY..."
 	@python3 -c "from cryptography.fernet import Fernet; print(f'FERNET_KEY={Fernet.generate_key().decode()}')" > .env
 	@echo ".env file generated."
