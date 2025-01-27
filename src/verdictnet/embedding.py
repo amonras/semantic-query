@@ -1,10 +1,7 @@
-import argparse
 import configparser
-from typing import List, Union, Tuple, Optional
+from typing import List, Union, Optional
 
 from numpy import ndarray
-from sentence_transformers import SentenceTransformer
-from torch import Tensor
 
 from verdictnet.config import root_path, get_config
 from verdictnet.models.node import Node
@@ -12,6 +9,8 @@ from verdictnet.models.node import Node
 
 class Embedding:
     def __init__(self, conf: Optional[configparser.ConfigParser] = None):
+        from sentence_transformers import SentenceTransformer
+
         self.conf = conf or get_config()
         # Load a pre-trained model
         self.model = SentenceTransformer(  # Lightweight, fast model
@@ -20,7 +19,7 @@ class Embedding:
         )
 
     def embed_nodes(self, nodes: List[Node]) -> tuple[
-        List[Union[List[Tensor], ndarray, Tensor]],
+        List[Union[List, ndarray]],
         List[str],
         List[dict]
     ]:
@@ -43,5 +42,5 @@ class Embedding:
 
         return embeddings, documents, metadata
 
-    def embed_string(self, text: str) -> Tensor:
+    def embed_string(self, text: str):
         return self.model.encode(text).tolist()
