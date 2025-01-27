@@ -1,4 +1,4 @@
-.PHONY: setup server etl test build clean
+.PHONY: setup profile server etl test build clean
 
 # Default port for the server
 PORT ?= 8000
@@ -14,6 +14,10 @@ setup:
 	@echo "Generating .env file with FERNET_KEY..."
 	@python3 -c "from cryptography.fernet import Fernet; print(f'FERNET_KEY={Fernet.generate_key().decode()}')" > .env
 	@echo ".env file generated."
+
+.PHONY: profile
+profile:
+	@py-spy record -o profile.svg -- python dags/jurisprudencia.py
 
 # Docker build
 .PHONY: build

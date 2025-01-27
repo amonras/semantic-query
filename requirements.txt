@@ -187,6 +187,7 @@ kombu==5.4.2
 kubernetes==31.0.0
 lazy-object-proxy==1.10.0
 limits==4.0.1
+line_profiler
 linkify-it-py==2.0.3
 llama-cloud==0.1.6
 llama-index==0.12.5

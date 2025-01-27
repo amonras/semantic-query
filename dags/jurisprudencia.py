@@ -1,11 +1,7 @@
 import pendulum
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from airflow.utils.dates import days_ago
-from datetime import datetime, timedelta
-import requests
-import json
-import os
+from datetime import timedelta
 
 from verdictnet.ingestion.downloader import get_item_pagination
 
