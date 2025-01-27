@@ -1,4 +1,4 @@
-from models.node import Node
+from verdictnet.models.node import Node
 
 
 class NodeRenderer:

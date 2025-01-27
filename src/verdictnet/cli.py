@@ -1,6 +1,6 @@
 import argparse
 
-import query
+from verdictnet import query
 
 
 def main():
@@ -40,7 +40,7 @@ def main():
 
 
 def handle_etl(args):
-    import etl
+    from verdictnet import etl
     if args.subcommand == "clean":
         etl.clean()
     elif args.subcommand == "run":

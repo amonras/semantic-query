@@ -1,9 +1,9 @@
 import os
 import textwrap
 
-from render.plain_text import PlainTextRenderer
-from storage.chroma_storage import ChromaStorage
-from storage.hybrid_storage import HybridStorage
+from verdictnet.render.plain_text import PlainTextRenderer
+from verdictnet.storage.chroma_storage import ChromaStorage
+from verdictnet.storage.hybrid_storage import HybridStorage
 
 
 def query(q_string: str, n_results: int = 3):

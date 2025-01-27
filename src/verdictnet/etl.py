@@ -6,14 +6,14 @@ import requests
 from slugify import slugify
 from bs4 import BeautifulSoup
 
-from config import get_config, root_path, get_fs
-from ingestion.documentspec import DocumentSpec
-from ingestion.paths import refined_path
-from models.node import Node
-from ingestion.parsers.html_parser import parse
-from storage.chroma_storage import ChromaStorage
-from storage.hybrid_storage import HybridStorage
-from storage.transaction_manager import TransactionManager
+from verdictnet.config import get_config, root_path, get_fs
+from verdictnet.ingestion.documentspec import DocumentSpec
+from verdictnet.ingestion.paths import refined_path
+from verdictnet.models.node import Node
+from verdictnet.ingestion.parsers.html_parser import parse
+from verdictnet.storage.chroma_storage import ChromaStorage
+from verdictnet.storage.hybrid_storage import HybridStorage
+from verdictnet.storage.transaction_manager import TransactionManager
 
 
 def get_docspecs(path: Path = None) -> List[Path]:
