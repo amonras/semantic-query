@@ -1,4 +1,4 @@
-.PHONY: server etl test build clean
+.PHONY: setup server etl test build clean
 
 # Default port for the server
 PORT ?= 8000
@@ -6,6 +6,12 @@ PORT ?= 8000
 # Path for ETL documents
 ETL_PATH ?= /path/to/docspecs
 FORCE ?= true
+
+.PHONY: setup
+setup:
+	@echo "Generating .env file with FERNET_KEY..."
+	@python3 -c "from cryptography.fernet import Fernet; print(f'FERNET_KEY={Fernet.generate_key().decode()}')" > .env
+	@echo ".env file generated."
 
 # Docker build
 .PHONY: build
