@@ -52,7 +52,7 @@ x-airflow-common:
   # image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.10.4}
   build: .
   env_file:
-    - .env
+    - config/local/.env
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
@@ -73,7 +73,7 @@ x-airflow-common:
       "host": "minio",
       "port": 9000,
       "schema": "http",
-      "extra": {"endpoint_url": "http://minio:9000\"}
+      "extra": {"endpoint_url": "http://minio:9000"}
     }'
     # yamllint disable rule:line-length
     # Use simple http server on scheduler for health checks
@@ -91,6 +91,7 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+    - ${PWD}/config/local/config.ini:/opt/airflow/config.ini
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on

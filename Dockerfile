@@ -4,7 +4,6 @@ USER root
 COPY requirements.txt .
 COPY src/ src/
 COPY setup.py .
-COPY config.ini .
 RUN chown -R airflow src/
 RUN apt-get update && apt-get install -y build-essential
 
