@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Optional
 
 import fsspec
+from airflow.hooks.base import BaseHook
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,13 +31,25 @@ def get_config():
 def configure_fsspec():
     config = get_config()
 
-    s3_config = {
-        "key": os.getenv("AWS_ACCESS_KEY_ID", config.get('s3', 'key')),
-        "secret": os.getenv("AWS_SECRET_ACCESS_KEY", config.get('s3', 'secret')),
-        "client_kwargs": {
-            "endpoint_url": os.getenv("S3_ENDPOINT", config.get('s3', 'endpoint_url'))
+    # Check if running within Airflow
+    if 'AIRFLOW_HOME' in os.environ:
+        # Retrieve the connection details from Airflow
+        connection = BaseHook.get_connection('minio')
+        s3_config = {
+            "key": connection.login,
+            "secret": connection.password,
+            "client_kwargs": {
+                "endpoint_url": connection.extra_dejson.get('endpoint_url')
+            }
         }
-    }
+    else:
+        s3_config = {
+            "key": os.getenv("AWS_ACCESS_KEY_ID", config.get('s3', 'key')),
+            "secret": os.getenv("AWS_SECRET_ACCESS_KEY", config.get('s3', 'secret')),
+            "client_kwargs": {
+                "endpoint_url": os.getenv("S3_ENDPOINT", config.get('s3', 'endpoint_url'))
+            }
+        }
 
     fsspec.config.conf = {
         "s3": s3_config

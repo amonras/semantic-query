@@ -1,5 +1,5 @@
-from ingestion.documentspec import DocumentSpec
-from models.node import Node
+from verdictnet.ingestion.documentspec import DocumentSpec
+from verdictnet.models.node import Node
 
 
 def next_class(tags):
