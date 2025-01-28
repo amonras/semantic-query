@@ -1,5 +1,5 @@
-from models.node import Node
-from render.node_renderer import NodeRenderer
+from verdictnet.models.node import Node
+from verdictnet.render.node_renderer import NodeRenderer
 
 
 class HTMLRenderer(NodeRenderer):

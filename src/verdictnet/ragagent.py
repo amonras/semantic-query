@@ -2,11 +2,9 @@ import configparser
 import logging
 from typing import Optional, List
 
-import chromadb
-
-from models.node import Node
-from query import print_results
-from storage.hybrid_storage import HybridStorage
+from verdictnet.models.node import Node
+from verdictnet.query import print_results
+from verdictnet.storage.hybrid_storage import HybridStorage
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)

@@ -5,9 +5,9 @@ from io import BytesIO
 from PyPDF2 import PdfFileReader
 from starlette.websockets import WebSocket
 
-from frontend.paths import uploads
-from ragagent import RAGAgent
-from frontend.server.dto.websocket import WebSocketMessage, ChatQueryMessage, FileUploaded, ChatResponseMessage, \
+from verdictnet.frontend.paths import uploads
+from verdictnet.ragagent import RAGAgent
+from verdictnet.frontend.server.dto.websocket import WebSocketMessage, ChatQueryMessage, FileUploaded, ChatResponseMessage, \
     UnfoldNodes
 
 

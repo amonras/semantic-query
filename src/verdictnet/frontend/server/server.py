@@ -9,14 +9,14 @@ from starlette.responses import HTMLResponse
 from starlette.staticfiles import StaticFiles
 from starlette.websockets import WebSocketDisconnect
 
-from config import get_config
-from etl import get_files
-from frontend import paths
-from ragagent import RAGAgent
-from frontend.server.websocket import Connection
-from frontend.server.dto.websocket import ConnectionId, DisplayDocuments
-from render.html import HTMLRenderer
-from storage.hybrid_storage import HybridStorage
+from verdictnet.config import get_config
+from verdictnet.etl import get_files
+from verdictnet.frontend import paths
+from verdictnet.ragagent import RAGAgent
+from verdictnet.frontend.server.websocket import Connection
+from verdictnet.frontend.server.dto.websocket import ConnectionId, DisplayDocuments
+from verdictnet.render.html import HTMLRenderer
+from verdictnet.storage.hybrid_storage import HybridStorage
 
 conf = get_config()
 

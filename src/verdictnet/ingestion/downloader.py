@@ -307,7 +307,6 @@ def ingest_pdfs(date: datetime, transaction_manager: TransactionManager, force=F
     transaction_manager.store_with_transaction(nodes, parent_uuid=dataset_uuid)
 
 
-
 if __name__ == "__main__":
     start_date = datetime.today() - timedelta(days=20)
     end_date = datetime.today() - timedelta(days=1)

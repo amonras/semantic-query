@@ -54,7 +54,7 @@ def handle_query(args):
 
 
 def handle_server(args):
-    from frontend.server import server
+    from verdictnet.frontend.server import server
     server.main()
 
 
