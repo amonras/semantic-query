@@ -46,7 +46,7 @@ def handle_etl(args):
     elif args.subcommand == "run":
         etl.run(force_download=args.force, path=args.path)
     else:
-        print("No {args.subcommand} subcommand found.")
+        print(f"No {args.subcommand} subcommand found.")
 
 
 def handle_query(args):

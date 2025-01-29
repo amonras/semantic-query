@@ -1,4 +1,5 @@
 import configparser
+import json
 import logging
 import os
 from pathlib import Path
@@ -13,22 +14,30 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s.%(funcName)s [%(levelname)s]: %(message)s",
 )
 
+logger = logging.getLogger(__name__)
+
+_fsspec_configured = False
+
 
 def root_path():
-    return Path(__file__).parent.parent.parent
+    return Path(__file__).parent.parent
 
 
 def get_config():
     # Create a ConfigParser instance
     config = configparser.ConfigParser()
 
-    # Load the configuration file from the current folder
+    # Load the configuration file from the current folder, or from the package root folder
     config.read(filenames=['config.ini', root_path() / 'config.ini'])
 
     return config
 
 
 def configure_fsspec():
+    global _fsspec_configured
+    if _fsspec_configured:
+        return
+
     config = get_config()
 
     # Check if running within Airflow
@@ -55,9 +64,9 @@ def configure_fsspec():
         "s3": s3_config
     }
 
-
-# Call the function to configure fsspec
-configure_fsspec()
+    # TODO: Warning. This is potentially logging sensitive passwords. Password obfuscation should be implemented.
+    logger.info("fsspec configured with: %s", json.dumps(fsspec.config.conf))
+    _fsspec_configured = True
 
 
 def get_fs(conf: Optional[configparser.ConfigParser] = None):

@@ -1,4 +1,5 @@
 import os
+from configparser import ConfigParser
 from pathlib import Path
 from typing import List
 
@@ -6,14 +7,15 @@ import requests
 from slugify import slugify
 from bs4 import BeautifulSoup
 
-from verdictnet.config import get_config, root_path, get_fs
+from verdictnet.config import get_config, root_path, logging
 from verdictnet.ingestion.documentspec import DocumentSpec
 from verdictnet.ingestion.paths import refined_path
 from verdictnet.models.node import Node
 from verdictnet.ingestion.parsers.html_parser import parse
-from verdictnet.storage.chroma_storage import ChromaStorage
 from verdictnet.storage.hybrid_storage import HybridStorage
 from verdictnet.storage.transaction_manager import TransactionManager
+
+logger = logging.getLogger(__name__)
 
 
 def get_docspecs(path: Path = None) -> List[Path]:
@@ -70,8 +72,68 @@ def get_document_structure(text, docspec: DocumentSpec) -> List[Node]:
     return parsed
 
 
-def ingest(main_node, docspec: DocumentSpec, storage: TransactionManager):
-    all_nodes = main_node.get_all(level=docspec.embed_level)
+def download_doc(docspec: DocumentSpec, conf, force_download=False):
+    """
+    Download the document and save it to the raw folder in html format
+    """
+    slug_name = slugify(docspec.name)
+
+    target_filename = f'{slug_name}.html'
+    raw_path = root_path() / conf['storage']['raw'] / target_filename
+
+    # Download documents
+    if force_download or not os.path.exists(raw_path):
+        print(f"Downloading document `{docspec.name}`...")
+        text = download(docspec)
+
+        os.makedirs(os.path.dirname(raw_path), exist_ok=True)
+        with open(raw_path, 'w') as file:
+            file.write(text)
+
+
+def refine(docspec, conf):
+    """
+    Take the document in html format and refine it to a json format
+    """
+    slug_name = slugify(docspec.name)
+
+    target_filename = f'{slug_name}.html'
+    raw_path = root_path() / conf['storage']['refined'] / target_filename
+
+    with open(raw_path, 'r') as file:
+        text = file.read()
+
+    target = refined_path() + f'{slug_name}.json'
+
+    main_node = get_document_structure(text, docspec=docspec)
+
+    main_node[0].save(target)
+    print(f"Saved refined in '{target_filename}'.")
+
+
+def render_html(docspec: DocumentSpec, conf: ConfigParser):
+    slug_name = slugify(docspec.name)
+    main_node_path = refined_path() + f'{slug_name}.json'
+    main_node = Node.load(main_node_path)
+
+    html_path = root_path() / conf['storage']['html'] / f'{slug_name}.html'
+    os.makedirs(os.path.dirname(html_path), exist_ok=True)
+    with open(html_path, 'w', encoding='utf-8') as file:
+        file.write(main_node[0].html(
+            preamble="""
+            <html lang="es"><head><meta charset="utf-8" /></head>
+            """
+        ))
+    logger.info(f"HTML saved to '{slug_name}.html'.")
+
+
+def ingest(docspec: DocumentSpec, conf: ConfigParser):
+    slug_name = slugify(docspec.name)
+    main_node_path = refined_path() + f'{slug_name}.json'
+    main_node = Node.load(main_node_path)
+
+    storage = TransactionManager.get_transaction_manager(conf)
+    # all_nodes = main_node.get_all(level=docspec.embed_level)
 
     storage.store_with_transaction(main_node)
 
@@ -93,52 +155,23 @@ def clean():
 def run(force_download=False, path=None):
     conf = get_config()
 
-    transaction_manager = TransactionManager.get_transaction_manager(conf)
-
     # Load Docspecs
     filenames = get_docspecs(path)
     docspecs = [DocumentSpec.load(filename) for filename in filenames]
 
     for docspec in docspecs:
 
-        slug_name = slugify(docspec.name)
-
-        # Download documents
-        target_filename = f'{slug_name}.html'
-        raw_path = root_path() / conf['storage']['raw'] / target_filename
-
-        if force_download or not os.path.exists(raw_path):
-            print(f"Downloading document `{docspec.name}`...")
-            text = download(docspec)
-
-            os.makedirs(os.path.dirname(raw_path), exist_ok=True)
-            with open(raw_path, 'w') as file:
-                file.write(text)
-        else:
-            with open(raw_path, 'r') as file:
-                text = file.read()
+        # Download document
+        download_doc(docspec, conf, force_download)
 
         # Refining documents
-        target = refined_path() + f'{slug_name}.json'
+        refine(docspec, conf)
 
-        main_node = get_document_structure(text, docspec=docspec)
-
-        main_node[0].save(target)
-        print(f"Saved refined in '{target_filename}'.")
-
-        # Saving json
-        html_path = root_path() / conf['storage']['html'] / f'{slug_name}.html'
-        os.makedirs(os.path.dirname(html_path), exist_ok=True)
-        with open(html_path, 'w', encoding='utf-8') as file:
-            file.write(main_node[0].html(
-                preamble="""
-                <html lang="es"><head><meta charset="utf-8" /></head>
-                """
-            ))
-        print(f"HTML saved to '{slug_name}.html'.")
+        # Render html
+        render_html(docspec, conf)
 
         # Ingesting into vector database
-        ingest(main_node[0], docspec, storage=transaction_manager)
+        ingest(docspec, conf)
 
 
 if __name__ == "__main__":

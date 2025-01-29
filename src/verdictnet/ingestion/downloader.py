@@ -88,6 +88,7 @@ def create_session():
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:132.0) Gecko/20100101 Firefox/132.0"
     }
 
+    logger.info("Creating session: %s", f"{BASE_URL}/search/")
     response = session.get(f"{BASE_URL}/search/", headers=headers_dict)
 
     if response.status_code != 200:

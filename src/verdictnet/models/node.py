@@ -83,7 +83,8 @@ class Node(AutoIncrement):
         with fs.open(path, 'w', encoding='utf8') as file:
             json.dump(self.json(), file, indent=4, ensure_ascii=False)
 
-    def load(self, path):
+    @classmethod
+    def load(cls, path):
         """
         Load the node from a file
         """
