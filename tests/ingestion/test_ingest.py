@@ -2,7 +2,7 @@ from pathlib import Path
 from unittest.mock import patch
 import pytest
 
-from etl import get_docspecs
+from verdictnet.etl import get_docspecs
 
 
 @pytest.fixture

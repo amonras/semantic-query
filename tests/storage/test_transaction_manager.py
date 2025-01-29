@@ -1,8 +1,8 @@
 import pytest
 from unittest.mock import MagicMock, call
-from models.node import Node
-from storage.transaction_manager import TransactionManager
-from storage.hybrid_storage import HybridStorage
+from verdictnet.models.node import Node
+from verdictnet.storage.transaction_manager import TransactionManager
+from verdictnet.storage.hybrid_storage import HybridStorage
 
 
 @pytest.fixture

@@ -5,8 +5,8 @@ from unittest.mock import MagicMock, call
 
 from neo4j import Result
 
-from models.node import Node
-from storage.graph_storage import GraphStorage
+from verdictnet.models.node import Node
+from verdictnet.storage.graph_storage import GraphStorage
 
 
 @pytest.fixture

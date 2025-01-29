@@ -1,5 +1,5 @@
-from models.node import Node
-from storage.adapters import NodeAdapter
+from verdictnet.models.node import Node
+from verdictnet.storage.adapters import NodeAdapter
 
 
 def test_to_neo4j_with_relationships_single_node():

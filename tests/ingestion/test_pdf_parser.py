@@ -2,8 +2,8 @@ import pytest
 import os
 
 from conftest import resources
-from models.node import Node
-from ingestion.parsers.pdf_parser import extract_paragraphs
+from verdictnet.models.node import Node
+from verdictnet.ingestion.parsers.pdf_parser import extract_paragraphs
 
 
 @pytest.fixture

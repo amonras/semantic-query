@@ -1,7 +1,6 @@
 import pytest
 
-from storage.graph_storage import GraphStorage
-from storage.hybrid_storage import HybridStorage
+from verdictnet.storage.hybrid_storage import HybridStorage
 
 
 @pytest.fixture
