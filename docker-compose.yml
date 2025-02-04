@@ -205,6 +205,8 @@ services:
       # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
       DUMB_INIT_SETSID: "0"
     restart: always
+    volumes:
+      - ${PWD}/cache:/cache
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
