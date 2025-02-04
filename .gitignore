@@ -4,7 +4,7 @@
 */*.egg-info/*
 .idea/
 build/
-
+logs/
 __pycache__/
 docs/
 cache/
