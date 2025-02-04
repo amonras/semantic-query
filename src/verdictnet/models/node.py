@@ -88,9 +88,11 @@ class Node(AutoIncrement):
         """
         Load the node from a file
         """
-        with open(path, 'r', encoding='utf8') as file:
-            data = json.load(file, ensure_ascii=False)
-        return Node(**data)
+        fs = get_fs()
+
+        with fs.open(path, 'r', encoding='utf8') as file:
+            data = json.load(file)
+        return Node.from_dict(data)
 
     @classmethod
     def from_dict(cls, data):
@@ -100,6 +102,7 @@ class Node(AutoIncrement):
         return Node(
             id=data['id'],
             level=data['level'],
+            uuid=data['uuid'],
             content=data['content'],
             children=[cls.from_dict(child) for child in data['children']]
         )

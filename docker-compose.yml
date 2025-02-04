@@ -86,13 +86,15 @@ x-airflow-common:
     # The following line can be used to set a custom config file, stored in the local config folder
     # If you want to use it, outcomment it and replace airflow.cfg with the name of your config file
     AIRFLOW_CONFIG: '/opt/airflow/config/airflow.cfg'
+    PYTHONPATH: /app:${PYTHONPATH:-}  # Append custom path to existing PYTHONPATH
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
-    - ${PWD}/config/local/config.ini:/opt/airflow/config.ini
     - ${PWD}/config/local/airflow.cfg:/opt/airflow/config/airflow.cfg
+    - ./src/verdictnet:/app/verdictnet  # Mount local package directory to container
+    - ${PWD}/config/local/config.ini:/app/verdictnet/config.ini  # Mount local config file to container
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on

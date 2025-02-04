@@ -1,4 +1,4 @@
-.PHONY: setup install start profile server etl test build clean
+.PHONY: setup install start stop profile server etl test build clean
 
 # Default port for the server
 PORT ?= 8000
@@ -35,8 +35,20 @@ setup: install
 
 .PHONY: start
 start:
+	@echo "Detecting virtual environment..."
+	@if [ -n "$$VIRTUAL_ENV" ]; then \
+		echo "Virtual environment detected at $$VIRTUAL_ENV"; \
+		export VIRTUAL_ENV_PATH=$$VIRTUAL_ENV; \
+	else \
+		echo "No virtual environment detected."; \
+	fi
 	@echo "Starting up the microservices..."
 	@docker-compose up -d
+
+.PHONY: stop
+stop:
+	@echo "Stopping the microservices..."
+	@docker-compose down
 
 .PHONY: profile
 profile:

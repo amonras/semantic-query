@@ -5,8 +5,6 @@ from unittest.mock import patch
 from bs4 import BeautifulSoup
 from pytest import fixture
 
-from verdictnet.config import get_config
-
 
 @fixture(autouse=True)
 def mock_config():
@@ -23,19 +21,6 @@ from verdictnet.ingestion.documentspec import DocumentSpec
 from verdictnet.ingestion.parsers.html_parser import parse
 
 resources = Path(__file__).parent / "resources"
-
-
-
-@fixture
-def static_files():
-    from verdictnet.config import root_path
-    return root_path() / "verdictnet/frontend/static/css"
-
-
-@fixture
-def css_code(static_files):
-    with open(static_files / 'document_tree.css', 'r') as css_file:
-        yield css_file.read()
 
 
 @fixture

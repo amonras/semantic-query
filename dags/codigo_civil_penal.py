@@ -1,5 +1,6 @@
 import pendulum
 from airflow import DAG
+from airflow.decorators import task_group
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.python import PythonOperator
 from datetime import timedelta
@@ -42,50 +43,52 @@ def lazy_ingest(docspec):
     ingest(docspec, conf)
 
 
+def group(name, docspec):
+    """
+    Process a specific document
+    """
+    download_task = PythonOperator(
+        task_id=f'download_{name}',
+        python_callable=lazy_download_doc,
+        op_args=[docspec],
+    )
+
+    refine_task = PythonOperator(
+        task_id=f'refine_{name}',
+        python_callable=lazy_refine,
+        op_args=[docspec],
+    )
+
+    render_task = PythonOperator(
+        task_id=f'render_{name}',
+        python_callable=lazy_render_html,
+        op_args=[docspec],
+    )
+
+    ingest_task = PythonOperator(
+        task_id=f'ingest_{name}',
+        python_callable=lazy_ingest,
+        op_args=[docspec],
+    )
+
+    download_task >> refine_task >> render_task >> ingest_task
+
+    return download_task
+
 # Define the DAG
 with DAG(
         'download_codigos',
         default_args=default_args,
         description='Download Codigo Civil y Penal',
-        schedule='@manual',
+        schedule="@once",
         catchup=False,
 ):
     filenames = get_docspecs()
     docspecs = [DocumentSpec.load(filename) for filename in filenames]
-
-    download_task = {}
-    refine_task = {}
-    render_task = {}
-    ingest_task = {}
 
     start = EmptyOperator(task_id='start_task')
 
     for docspec in docspecs:
         name = slugify(docspec.name)
 
-        download_task[name] = PythonOperator(
-            task_id=f'download_{name}',
-            python_callable=lazy_download_doc,
-            op_args=[docspec],
-        )
-
-        refine_task[name] = PythonOperator(
-            task_id=f'refine_{name}',
-            python_callable=lazy_refine,
-            op_args=[docspec],
-        )
-
-        render_task[name] = PythonOperator(
-            task_id=f'render_{name}',
-            python_callable=lazy_render_html,
-            op_args=[docspec],
-        )
-
-        ingest_task[name] = PythonOperator(
-            task_id=f'ingest_{name}',
-            python_callable=lazy_ingest,
-            op_args=[docspec],
-        )
-
-        start >> download_task[name] >> refine_task[name]
-        download_task[name] >> render_task[name] >> ingest_task[name]
+        start >> group(name, docspec)

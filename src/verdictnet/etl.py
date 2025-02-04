@@ -7,9 +7,9 @@ import requests
 from slugify import slugify
 from bs4 import BeautifulSoup
 
-from verdictnet.config import get_config, root_path, logging
+from verdictnet.config import get_config, root_path, logging, get_fs
 from verdictnet.ingestion.documentspec import DocumentSpec
-from verdictnet.ingestion.paths import refined_path
+from verdictnet.ingestion.paths import refined_path, raw_path, html_path
 from verdictnet.models.node import Node
 from verdictnet.ingestion.parsers.html_parser import parse
 from verdictnet.storage.hybrid_storage import HybridStorage
@@ -31,7 +31,9 @@ def get_docspecs(path: Path = None) -> List[Path]:
                 filenames.append(Path(root + '/' + file))
 
     if not filenames:
-        print(f"No document Spec filed found in provided folder {path}")
+        logger.warning(f"No document Spec files found in provided folder {path}")
+    else:
+        logger.info(f"Found {len(filenames)} document specs: %s", ",".join([str(f) for f in filenames]))
 
     return filenames
 
@@ -76,18 +78,19 @@ def download_doc(docspec: DocumentSpec, conf, force_download=False):
     """
     Download the document and save it to the raw folder in html format
     """
+    fs = get_fs(conf)
+
     slug_name = slugify(docspec.name)
 
-    target_filename = f'{slug_name}.html'
-    raw_path = root_path() / conf['storage']['raw'] / target_filename
+    target_path = raw_path() + f'{slug_name}.html'
 
     # Download documents
-    if force_download or not os.path.exists(raw_path):
-        print(f"Downloading document `{docspec.name}`...")
+    if force_download or not os.path.exists(target_path):
+        logger.info(f"Downloading document `{docspec.name}`...")
         text = download(docspec)
 
-        os.makedirs(os.path.dirname(raw_path), exist_ok=True)
-        with open(raw_path, 'w') as file:
+        os.makedirs(os.path.dirname(target_path), exist_ok=True)
+        with fs.open(target_path, 'w') as file:
             file.write(text)
 
 
@@ -95,12 +98,14 @@ def refine(docspec, conf):
     """
     Take the document in html format and refine it to a json format
     """
+    fs = get_fs(conf)
+
     slug_name = slugify(docspec.name)
 
-    target_filename = f'{slug_name}.html'
-    raw_path = root_path() / conf['storage']['refined'] / target_filename
+    source_filename = f'{slug_name}.html'
+    soure_path = raw_path() + source_filename
 
-    with open(raw_path, 'r') as file:
+    with fs.open(soure_path, 'r') as file:
         text = file.read()
 
     target = refined_path() + f'{slug_name}.json'
@@ -108,23 +113,24 @@ def refine(docspec, conf):
     main_node = get_document_structure(text, docspec=docspec)
 
     main_node[0].save(target)
-    print(f"Saved refined in '{target_filename}'.")
+    logger.info(f"Saved refined in '{target}'.")
 
 
 def render_html(docspec: DocumentSpec, conf: ConfigParser):
+    fs = get_fs(conf)
+
     slug_name = slugify(docspec.name)
     main_node_path = refined_path() + f'{slug_name}.json'
     main_node = Node.load(main_node_path)
 
-    html_path = root_path() / conf['storage']['html'] / f'{slug_name}.html'
-    os.makedirs(os.path.dirname(html_path), exist_ok=True)
-    with open(html_path, 'w', encoding='utf-8') as file:
-        file.write(main_node[0].html(
+    html_file = html_path() + f'{slug_name}.html'
+    with fs.open(html_file, 'w', encoding='utf-8') as file:
+        file.write(main_node.html(
             preamble="""
             <html lang="es"><head><meta charset="utf-8" /></head>
             """
         ))
-    logger.info(f"HTML saved to '{slug_name}.html'.")
+    logger.info(f"HTML saved to '{html_file}'.")
 
 
 def ingest(docspec: DocumentSpec, conf: ConfigParser):
@@ -160,7 +166,6 @@ def run(force_download=False, path=None):
     docspecs = [DocumentSpec.load(filename) for filename in filenames]
 
     for docspec in docspecs:
-
         # Download document
         download_doc(docspec, conf, force_download)
 

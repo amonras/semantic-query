@@ -20,7 +20,7 @@ _fsspec_configured = False
 
 
 def root_path():
-    return Path(__file__).parent.parent
+    return Path(__file__).parent
 
 
 def get_config():
@@ -70,6 +70,7 @@ def configure_fsspec():
 
 
 def get_fs(conf: Optional[configparser.ConfigParser] = None):
+    configure_fsspec()
     conf = conf or get_config()
     if conf['storage']['type'] == 's3':
         fs = fsspec.filesystem("s3")

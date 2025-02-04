@@ -43,3 +43,14 @@ def refined_path():
         return root_path() / conf['storage']['bucket'] / conf['storage']['refined']
     elif conf['storage']['type'] == 's3':
         return f"s3://{conf['storage']['bucket']}/{conf['storage']['refined']}"
+
+
+def html_path():
+    """
+    Return the path where we store refined objects as JSON files ready to be ingested
+    into the database
+    """
+    if conf['storage']['type'] == 'local':
+        return root_path() / conf['storage']['bucket'] / conf['storage']['html']
+    elif conf['storage']['type'] == 's3':
+        return f"s3://{conf['storage']['bucket']}/{conf['storage']['html']}"
