@@ -15,5 +15,5 @@ minio/
 neo4j/
 neo4j_data/
 chromadb/
-postgress/
+postgres/
 
