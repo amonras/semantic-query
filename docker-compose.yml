@@ -276,7 +276,6 @@ services:
         mkdir -p /sources/logs /sources/dags /sources/plugins
         chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
         exec airflow db migrate
-        exec airflow users create -u ${_AIRFLOW_WWW_USER_USERNAME} -p ${_AIRFLOW_WWW_USER_PASSWORD} -r Admin --verbose -f air -l flow -e airflow@airflow.air
     # yamllint enable rule:line-length
     environment:
       <<: *airflow-common-env

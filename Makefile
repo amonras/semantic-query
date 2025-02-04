@@ -59,6 +59,23 @@ setup: install
 	fi
 	@echo "Minio setup complete. Stopping minio..."
 	@docker-compose stop minio
+	@echo "Initializing Airflow..."
+	@docker-compose up -d airflow-webserver
+	@echo "Waiting for Airflow to start..."
+	@until docker-compose exec airflow-webserver airflow db check; do \
+		echo "Airflow is not healthy yet. Retrying in 5 seconds..."; \
+		sleep 5; \
+	done
+	@echo "Creating Airflow user..."
+	@docker-compose exec airflow-webserver airflow users create -u airflow -p airflow -r Admin --verbose -f air -l flow -e airflow@airflow.air
+	@if  docker-compose exec airflow-webserver airflow connections get minio; then \
+		echo "Connection 'minio' already exists. Skipping creation."; \
+	else \
+		echo "Creating connection 'minio'..."; \
+		docker-compose exec airflow-webserver airflow connections add --conn-login minioadmin --conn-password minioadmin --conn-host minio --conn-port 9000 --conn-schema http --conn-extra '{"endpoint_url": "http://minio:9000"}' --conn-type aws minio; \
+	fi
+	@echo "Stopping Airflow..."
+	@docker-compose stop airflow-webserver
 	@echo "Setup complete."
 
 .PHONY: start

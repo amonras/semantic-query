@@ -15,6 +15,8 @@ This will
 - Install the package requirements in the current python environment (python 3.12 recommended)
 - Create an `.env` file with the necessary environment variables if it does not exist. Copy this `.env` file to the `config/local` directory if it does not already exist. 
 - Create the `datalake` and `airflow-logs` buckets in the Minio object storage.
+- Create the `airflow` user in Airflow.
+- Create the `minio` Airflow connection.
 - Install development dependencies.
 
 After this, you can start the development environment by running:

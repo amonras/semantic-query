@@ -9,7 +9,11 @@ __pycache__/
 docs/
 cache/
 data/
-datalake/
+plugins/
+
+minio/
+neo4j/
 neo4j_data/
-postgress_storage/
+chromadb/
+postgress/
 
