@@ -1,20 +1,43 @@
-# Semantic Graph Search Project
+# VerdictNet: Legal Semantic Search Engine
 
 This project is a semantic graph search system designed to manage and query data.
 Currently, the interface is a simple command-line interface (CLI) tool and a web server.
 The system supports data ingestion, cleaning, querying, and running a server for frontend interactions.
 
 
-## Quick Start
-You should be able to kickstart the project by launching the docker compose setup and then starting the server:
+## Development Quick Start
+It is strongly recommended to use a virtual environment to run the project. You should be able to kickstart the project by running the following commands:
 ```sh
-  $ docker-compose up
+  $ make setup
 ```
-This will launch the following services:
+
+This will
+- Install the package requirements in the current python environment (python 3.12 recommended)
+- Create an `.env` file with the necessary environment variables if it does not exist. Copy this `.env` file to the `config/local` directory if it does not already exist. 
+- Create the `datalake` and `airflow-logs` buckets in the Minio object storage.
+- Install development dependencies.
+
+After this, you can start the development environment by running:
+```sh
+  $ make start
+```
+The first launch will take some time because it will build the docker images.
+
+When done, the following services will be up and running:
 - [ChromaDB Browser: `http://localhost:3000/collections/legal-database`](http://localhost:3000/collections/legal-database). This is the vector Database used to run semantic queries.
 - [Neo4J Browser: `http://localhost:7474`](http://localhost:7474). This is a GUI to the graph database that will hold the relationships between the different documents indexed in the ChromaDB.
 - [Airflow: `http://localhost:8080`](http://localhost:8080). This is the scheduler used to run daily data mining tasks.
 - [Minio Console: `http://localhost:9001`](http://localhost:9001). This is the object storage used to store the documents in local develpment envs.
+
+The Postgress database is used by Airflow and is persisted to a `postgress_service`. This is useful if you want to do a clean start and not lose the data in the database.
+
+
+
+### Running the ETL pipeline
+To run the ETL pipeline, you can run the following command:
+```sh
+  $ make etl
+```
 
 Finally, run
 ```sh

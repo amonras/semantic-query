@@ -89,9 +89,11 @@ x-airflow-common:
     PYTHONPATH: /app:${PYTHONPATH:-}  # Append custom path to existing PYTHONPATH
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
-    - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
-    - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
-    - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
+    # TODO: need to figure out what happens with dag_processor_manager and scheduler logs, that don't go to minio
+    #- ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
+    - ${AIRFLOW_PROJ_DIR:-.}/config/local/:/opt/airflow/config
+    # TODO: Not needed ATM, but might be useful in the future
+    #- ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     - ${PWD}/config/local/airflow.cfg:/opt/airflow/config/airflow.cfg
     - ./src/verdictnet:/app/verdictnet  # Mount local package directory to container
     - ${PWD}/config/local/config.ini:/app/verdictnet/config.ini  # Mount local config file to container
@@ -111,7 +113,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ${PWD}/chromadb_storage:/data
+      - ${PWD}/chromadb:/data
 
   chromadb-admin:
     image: fengzhichao/chromadb-admin:latest
@@ -136,7 +138,7 @@ services:
       start_period: 5s
     restart: always
     volumes:
-      - ${PWD}/postgress_storage:/var/lib/postgresql/data
+      - ${PWD}/postgress:/var/lib/postgresql/data
   redis:
     # Redis is limited to 7.2-bookworm due to licencing change
     # https://redis.io/blog/redis-adopts-dual-source-available-licensing/
@@ -273,7 +275,8 @@ services:
         fi
         mkdir -p /sources/logs /sources/dags /sources/plugins
         chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
-        exec airflow db init
+        exec airflow db migrate
+        exec airflow users create -u ${_AIRFLOW_WWW_USER_USERNAME} -p ${_AIRFLOW_WWW_USER_PASSWORD} -r Admin --verbose -f air -l flow -e airflow@airflow.air
     # yamllint enable rule:line-length
     environment:
       <<: *airflow-common-env
@@ -294,7 +297,7 @@ services:
       - "9000:9000"  # API
       - "9001:9001"  # Console
     volumes:
-      - ${PWD}/data/:/data
+      - ${PWD}/minio/:/data
     command: server /data --console-address ":9001"
 
   neo4j:
@@ -307,7 +310,3 @@ services:
       - "7687:7687"  # Bolt protocol
     volumes:
       - ${PWD}/neo4j_data:/data
-
-volumes:
-  chromadb_data:
-  postgres_data:
