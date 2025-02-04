@@ -10,7 +10,8 @@ from pytest import fixture
 def mock_config():
     def mock_get_config():
         config = configparser.ConfigParser()
-        config.read('resources/config.ini')
+        success = config.read(['resources/config.ini', 'tests/resources/config.ini'])
+        assert success is not [], "Could not read mock config file"
         return config
 
     with patch('verdictnet.config.get_config', mock_get_config):

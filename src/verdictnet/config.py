@@ -28,7 +28,8 @@ def get_config():
     config = configparser.ConfigParser()
 
     # Load the configuration file from the current folder, or from the package root folder
-    config.read(filenames=['config.ini', root_path() / 'config.ini'])
+    files = config.read(filenames=['config.ini', root_path() / 'config.ini'])
+    logger.info("Successfully loaded config files: %s", files)
 
     return config
 
