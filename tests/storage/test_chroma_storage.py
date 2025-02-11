@@ -1,9 +1,9 @@
 import chromadb
 import pytest
 from unittest.mock import MagicMock
-from models.node import Node
-from storage.chroma_storage import ChromaStorage
-from embedding import Embedding
+from verdictnet.models.node import Node
+from verdictnet.storage.chroma_storage import ChromaStorage
+from verdictnet.embedding import Embedding
 
 
 @pytest.fixture

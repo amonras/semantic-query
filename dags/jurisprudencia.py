@@ -1,68 +1,89 @@
+import pendulum
 from airflow import DAG
-from airflow.operators.python_operator import PythonOperator
-from airflow.utils.dates import days_ago
-from datetime import datetime, timedelta
-import requests
-import json
-import os
+from airflow.operators.python import PythonOperator
+from datetime import timedelta, datetime
 
 # Define the default arguments
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
-    'start_date': days_ago(8 * 7),  # Start date 8 weeks ago
+    'start_date': pendulum.today('UTC').add(days=-8 * 7),  # Start date 8 weeks ago
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
 }
 
+
+def get_item_pagination_task(date: str):
+    from verdictnet.ingestion.downloader import get_item_pagination
+    return get_item_pagination(datetime.strptime(date, "%Y-%m-%d"))
+
+
+def refine_item_pagination_task(date: str):
+    from verdictnet.ingestion.downloader import refine_item_pagination
+    return refine_item_pagination(datetime.strptime(date, "%Y-%m-%d"))
+
+
+def download_pdfs_task(date: str):
+    from verdictnet.ingestion.downloader import download_pdfs
+    return download_pdfs(datetime.strptime(date, "%Y-%m-%d"))
+
+
+def parse_pdfs_task(date: str):
+    from verdictnet.ingestion.downloader import parse_pdfs
+    return parse_pdfs(datetime.strptime(date, "%Y-%m-%d"))
+
+
+def ingest_pdfs_task(date: str):
+    from verdictnet.ingestion.downloader import ingest_pdfs
+    from verdictnet.storage.transaction_manager import TransactionManager
+    from verdictnet.config import get_config
+
+    transaction_manager = TransactionManager.get_transaction_manager(get_config())
+    dataset_uuid = transaction_manager.init_dataset("Jurisprudencia")
+    return ingest_pdfs(date=datetime.strptime(date, "%Y-%m-%d"),
+                transaction_manager=transaction_manager,
+                dataset_uuid=dataset_uuid)
+
+
 # Define the DAG
-dag = DAG(
+with DAG(
     'query_poderjudicial',
     default_args=default_args,
     description='Query www.poderjudicial.es and store results in JSON',
-    schedule_interval='@weekly',
+    schedule='@daily',
     catchup=True,
-)
+):
+    item_pagination_task = PythonOperator(
+        task_id='get_item_pagination',
+        python_callable=get_item_pagination_task,
+        op_kwargs={'date': "{{ ds }}"},
+    )
 
-# Define the Python function to query the API and save results
-def query_poderjudicial(ds, **kwargs):
-    date_from = (datetime.strptime(ds, '%Y-%m-%d') - timedelta(days=7)).strftime('%Y-%m-%d')
-    date_to = ds
-    #
-    # url = 'https://www.poderjudicial.es/search/search.action'
-    # payload = {
-    #     "action": "query",
-    #     "sort": "IN_FECHARESOLUCION:decreasing",
-    #     "recordsPerPage": "10",
-    #     "databasematch": "AN",
-    #     "start": "1",
-    #     "FECHARESOLUCIONDESDE": date_from,
-    #     "FECHARESOLUCIONHASTA": date_to,
-    #     "TIPOINTERES_ACTUAL": "Actualidad",
-    #     "TIPOORGANOPUB": "|11|12|13|14|15|16|"
-    # }
-    # headers = {
-    #     'Content-Type': 'application/json'
-    # }
-    #
-    # response = requests.post(url, json=payload, headers=headers)
-    # response.raise_for_status()
-    #
-    # results = response.json()
-    # output_path = f'/path/to/output/results_{date_from}_to_{date_to}.json'
-    #
-    # with open(output_path, 'w') as f:
-    #     json.dump(results, f)
+    refine_pagination_task = PythonOperator(
+        task_id='refine_item_pagination',
+        python_callable=refine_item_pagination_task,
+        op_kwargs={'date': "{{ ds }}"},
+    )
 
-# Define the task
-query_task = PythonOperator(
-    task_id='query_poderjudicial_task',
-    provide_context=True,
-    python_callable=query_poderjudicial,
-    dag=dag,
-)
+    download_pdfs = PythonOperator(
+        task_id='download_pdfs',
+        python_callable=download_pdfs_task,
+        op_kwargs={'date': "{{ ds }}"},
+    )
 
-# Set the task in the DAG
-query_task
+    parse_pdfs = PythonOperator(
+        task_id='parse_pdfs',
+        python_callable=parse_pdfs_task,
+        op_kwargs={'date': "{{ ds }}"},
+    )
+
+    ingest_pdfs = PythonOperator(
+        task_id='ingest_pdfs',
+        python_callable=ingest_pdfs_task,
+        op_kwargs={'date': "{{ ds }}"},
+    )
+
+    item_pagination_task >> refine_pagination_task >> download_pdfs >> parse_pdfs >> ingest_pdfs
+

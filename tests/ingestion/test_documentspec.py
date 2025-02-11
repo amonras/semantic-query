@@ -3,7 +3,7 @@ import json
 from pytest import fixture
 
 from conftest import resources
-from ingestion.documentspec import DocumentSpec
+from verdictnet.ingestion.documentspec import DocumentSpec
 
 
 @fixture

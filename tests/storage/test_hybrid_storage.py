@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import MagicMock
-from models.node import Node
-from storage.hybrid_storage import HybridStorage
+from verdictnet.models.node import Node
+from verdictnet.storage.hybrid_storage import HybridStorage
 
 
 @pytest.fixture

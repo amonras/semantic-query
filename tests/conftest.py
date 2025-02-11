@@ -1,24 +1,27 @@
+import configparser
 from pathlib import Path
+from unittest.mock import patch
 
 from bs4 import BeautifulSoup
 from pytest import fixture
 
-from config import root_path
-from ingestion.documentspec import DocumentSpec
-from ingestion.parsers.html_parser import parse
+
+@fixture(autouse=True)
+def mock_config():
+    def mock_get_config():
+        config = configparser.ConfigParser()
+        success = config.read(['resources/config.ini', 'tests/resources/config.ini'])
+        assert success is not [], "Could not read mock config file"
+        return config
+
+    with patch('verdictnet.config.get_config', mock_get_config):
+        yield
+
+
+from verdictnet.ingestion.documentspec import DocumentSpec
+from verdictnet.ingestion.parsers.html_parser import parse
 
 resources = Path(__file__).parent / "resources"
-
-
-@fixture
-def static_files():
-    return root_path() / "src/frontend/static/css"
-
-
-@fixture
-def css_code(static_files):
-    with open(static_files / 'document_tree.css', 'r') as css_file:
-        yield css_file.read()
 
 
 @fixture

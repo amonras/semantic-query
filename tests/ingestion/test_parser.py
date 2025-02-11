@@ -2,7 +2,7 @@ from pytest import fixture
 from bs4 import BeautifulSoup
 
 from conftest import codigo_civil_spec
-from ingestion.parsers.html_parser import parse
+from verdictnet.ingestion.parsers.html_parser import parse
 
 
 @fixture(scope='class')
